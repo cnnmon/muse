@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.museum"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -60,4 +60,8 @@ dependencies {
     implementation platform('com.google.cloud:libraries-bom:20.7.0')
     implementation 'com.google.cloud:google-cloud-language'
     implementation 'com.google.cloud:google-cloud-storage'
+    // NLP
+    implementation 'org.jgrapht:jgrapht-core:0.9.1'
+    implementation 'org.apache.opennlp:opennlp:1.6.0'
+    implementation 'org.apache.opennlp:opennlp-tools:1.6.0'
 }

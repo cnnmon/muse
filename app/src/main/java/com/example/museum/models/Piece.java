@@ -11,15 +11,17 @@ import java.util.List;
 @Parcel
 public class Piece {
 
-    int id;
-    String imageURL;
-    String title;
-    String artist;
-    String department;
-    String objectDate;
-    String medium;
-    String metURL;
-    List<String> tags;
+    public int id;
+    public String imageURL;
+    public String title;
+    public String artist;
+    public String department;
+    public String objectDate;
+    public String medium;
+    public String metURL;
+    public List<String> tags;
+
+    public void Piece() {}
 
     public static Piece fromJson(JSONObject jsonObject) throws JSONException {
         Piece piece = new Piece();

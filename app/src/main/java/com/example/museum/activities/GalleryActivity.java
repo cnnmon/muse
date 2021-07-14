@@ -1,10 +1,10 @@
 package com.example.museum.activities;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
 
 import com.example.museum.R;
 import com.example.museum.adapters.PieceAdapter;

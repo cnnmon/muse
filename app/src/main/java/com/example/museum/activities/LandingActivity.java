@@ -1,6 +1,8 @@
 package com.example.museum.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -8,8 +10,11 @@ import androidx.fragment.app.FragmentManager;
 import com.example.museum.R;
 import com.example.museum.fragments.LoginFragment;
 import com.example.museum.fragments.RegisterFragment;
+import com.parse.ParseUser;
 
 public class LandingActivity extends AppCompatActivity {
+
+    public static final String TAG = "LandingActivity";
 
     public FragmentManager fragmentManager;
     public LoginFragment login;
@@ -23,5 +28,12 @@ public class LandingActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         login = new LoginFragment();
         register = new RegisterFragment();
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            Log.i(TAG, "resuming session as " + currentUser.getUsername());
+            Intent i = new Intent(this, HomeActivity.class);
+            startActivity(i);
+        }
     }
 }

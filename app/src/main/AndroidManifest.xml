@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Museum">
-        <activity android:name=".activities.HomeActivity"></activity>
+        <activity android:name=".activities.JournalActivity" android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name=".activities.LandingActivity"
             android:windowSoftInputMode="adjustResize">
@@ -38,6 +38,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <activity android:name=".activities.HomeActivity" />
         <activity android:name=".activities.GalleryActivity" />
         <activity android:name=".activities.SearchActivity" />
     </application>

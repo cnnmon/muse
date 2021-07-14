@@ -29,6 +29,7 @@ public class LandingActivity extends AppCompatActivity {
         login = new LoginFragment();
         register = new RegisterFragment();
 
+        // remembers current user
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             Log.i(TAG, "resuming session as " + currentUser.getUsername());

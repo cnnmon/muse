@@ -1,7 +1,6 @@
 package com.example.museum;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import com.example.museum.models.Piece;
@@ -18,20 +17,46 @@ public class TRApplication {
 
     private static final String TAG = "TRClient";
 
-    private static final int MAX_PIECES = 7;
-    private static final int MAX_KEYWORDS = 4;
+    private static final int MAX_PIECES = 1;
+    private static final int MAX_KEYWORDS = 1;
 
     private static TextRank tr;
     private static MetClient met;
 
-    public static void initialize(Context context) throws IOException {
+    public static void initialize(Context context) {
         met = new MetClient(context);
         InputStream sent = context.getResources().openRawResource(R.raw.en_sent);
         InputStream token = context.getResources().openRawResource(R.raw.en_token);
         InputStream stop = context.getResources().openRawResource(R.raw.stopwords);
         InputStream exstop = context.getResources().openRawResource(R.raw.extended_stopwords);
-        tr = new TextRank(sent, token, stop, exstop);
+
+        try {
+            tr = new TextRank(sent, token, stop, exstop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    // TODO: Fix (No such file or directory) error
+    /*
+    private void POStagger(String content) throws IOException {
+        InputStream enpos = new FileInputStream("/Users/tiffanywang/Documents/Museum/app/src/main/res/raw/en_pos_maxent.bin");
+        pos = new POSModel(enpos);
+        Log.i(TAG, String.valueOf(pos == null));
+        //Instantiating POSTaggerME class
+        POSTaggerME tagger = new POSTaggerME(pos);
+
+        //Tokenizing the sentence using WhitespaceTokenizer class
+        WhitespaceTokenizer whitespaceTokenizer= WhitespaceTokenizer.INSTANCE;
+        String[] tokens = whitespaceTokenizer.tokenize(content);
+
+        //Generating tags
+        String[] tags = tagger.tag(tokens);
+
+        //Instantiating the POSSample class
+        POSSample sample = new POSSample(tokens, tags);
+        Log.i(TAG, sample.toString());
+    }*/
 
     /**
      * Analyzes text using TextRank and finds important keywords.
@@ -39,7 +64,7 @@ public class TRApplication {
      * @contents: contents of text to analyze
      * @callback: function that happens after analysis is finished (ex. load gallery)
      */
-    public void onAnalysis(String contents, Runnable callback) {
+    public static void onAnalysis(String contents, Callback callback) {
         //doesn't parse em-dashes correctly
         contents = contents.replace('\u2014', ' ');
 
@@ -64,7 +89,7 @@ public class TRApplication {
     /**
      * Searches MET API based on a given word.
      */
-    private void searchKeyword(String key, Runnable callback) {
+    private static void searchKeyword(String key, Callback callback) {
         List<Piece> pieces = new ArrayList<>();
 
         // retrieves art pieces from search
@@ -85,8 +110,7 @@ public class TRApplication {
                             pieces.add(piece);
                             if (pieces.size() == maxCount) {
                                 Log.i(TAG, "PIECES: " + pieces.toString());
-                                Handler h = new Handler();
-                                h.post(callback);
+                                callback.run(pieces.get(0));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

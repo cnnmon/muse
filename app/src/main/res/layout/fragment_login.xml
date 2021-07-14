@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_marginBottom="5dp"
-        android:background="@layout/outlined_edit_text"
+        android:background="@drawable/outlined_edit_text"
         android:ems="10"
         android:fontFamily="@font/roboto"
         android:hint="username"
@@ -39,7 +39,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp"
-        android:background="@layout/outlined_edit_text"
+        android:background="@drawable/outlined_edit_text"
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
@@ -63,8 +63,9 @@
 
     <TextView
         android:id="@+id/tvRegister"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="2dp"
         android:gravity="center"
         android:text="Create Account"

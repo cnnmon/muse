@@ -7,19 +7,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import org.jetbrains.annotations.NotNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.museum.R;
 import com.example.museum.models.Piece;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class PieceAdapter extends RecyclerView.Adapter<PieceAdapter.ViewHolder> {
 
-    Context context;
-    List<Piece> pieces;
+    private Context context;
+    private List<Piece> pieces;
 
     public PieceAdapter(Context context, List<Piece> pieces) {
         this.context = context;

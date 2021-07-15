@@ -69,7 +69,8 @@
             android:gravity="start|top"
             android:hint="How are you doing today?"
             android:inputType="textMultiLine"
-            android:minLines="20" />
+            android:minLines="20"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

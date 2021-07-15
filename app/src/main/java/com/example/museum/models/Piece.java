@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
-import org.parceler.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,72 +12,64 @@ import java.util.List;
 @Parcel
 public class Piece extends JSONObject {
 
-    @Transient
-    public JSONObject jsonObject;
-    public int id;
-    public String imageURL;
+    public String imageUrl;
     public String title;
     public String artist;
     public String department;
     public String objectDate;
     public String medium;
-    public String metURL;
-    public List<String> tags;
+    public String metUrl;
 
     public void Piece() {}
 
+    // Piece object from MET-given jsonObject
     public static Piece fromJson(JSONObject jsonObject) throws JSONException {
         Piece piece = new Piece();
-        piece.jsonObject = jsonObject;
-        piece.id = jsonObject.getInt("objectID");
-        piece.imageURL = jsonObject.getString("primaryImage");
+        piece.imageUrl = jsonObject.getString("primaryImage");
         piece.title = jsonObject.getString("title");
         piece.artist = jsonObject.getString("artistDisplayName");
         piece.department = jsonObject.getString("department");
         piece.objectDate = jsonObject.getString("objectDate");
         piece.medium = jsonObject.getString("medium");
-        piece.metURL = jsonObject.getString("objectURL");
-
-        piece.tags = new ArrayList<>();
-        if (!jsonObject.isNull("tags")) {
-            JSONArray jsonTags = jsonObject.getJSONArray("tags");
-            for (int i = 0; i < jsonTags.length(); i += 1) {
-                JSONObject tag = (JSONObject) jsonTags.get(i);
-                piece.tags.add(tag.getString("term"));
-            }
-        }
+        piece.metUrl = jsonObject.getString("objectURL");
 
         return piece;
     }
 
-    @Override
-    public @NotNull String toString() {
-        return "Piece{" +
-                "title='" + title + '\'' +
-                ", artist='" + artist + '\'' +
-                ", tags=" + tags +
-                '}';
+    public static List<Piece> fromJsonArray(JSONArray jsonArray) throws JSONException {
+        List<Piece> pieces = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i += 1) {
+            pieces.add(fromJson(jsonArray.getJSONObject(i)));
+        }
+        return pieces;
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public @NotNull String toString() {
+        return "\nPiece:" +
+                "title='" + title + '\'' +
+                "artist='" + artist + '\'' +
+                "";
     }
 
     public String getImageUrl() {
-        return imageURL;
+        return imageUrl;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getArtist() {
-        return artist;
+    // format into my jsonObject
+    public JSONObject getJson() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("primaryImage", imageUrl);
+        jsonObject.put("title", title);
+        jsonObject.put("artistDisplayName", artist);
+        jsonObject.put("department", department);
+        jsonObject.put("objectDate", objectDate);
+        jsonObject.put("medium", medium);
+        jsonObject.put("objectURL", metUrl);
+        return jsonObject;
     }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public JSONObject getJsonObject() { return jsonObject; }
 }

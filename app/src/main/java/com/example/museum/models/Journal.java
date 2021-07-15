@@ -4,6 +4,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.Format;
@@ -13,7 +14,6 @@ import java.text.SimpleDateFormat;
 public class Journal extends ParseObject {
 
     public static final String KEY_TITLE = "title";
-    public static final String KEY_IMAGE_URL = "imageUrl";
     public static final String KEY_COVER = "cover";
     public static final String KEY_CONTENTS = "contents";
     public static final String KEY_AUTHOR = "author";
@@ -33,7 +33,16 @@ public class Journal extends ParseObject {
 
     public String getSimpleDate() {
         Format f = new SimpleDateFormat("MM/dd/yy");
-        String date = f.format(getCreatedAt());
-        return date;
+        return f.format(getCreatedAt());
+    }
+
+    public Piece getPiece() {
+        JSONObject coverObject = getCover();
+        try {
+            return Cover.getActivePiece(coverObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

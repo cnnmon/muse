@@ -39,7 +39,6 @@ public class TextRank {
     private final HashSet<String> stopwords = new HashSet<String>();
     private final HashSet<String> extendedStopwords = new HashSet<String>();
 
-
     /**
      * Initialize TextRank with three inputstreams corresponsing to training information
      * for Sentence extraction and Tokenization, as well as stopwords lists for filtering.

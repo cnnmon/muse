@@ -14,14 +14,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.museum.Callback;
 import com.example.museum.R;
 import com.example.museum.TRApplication;
+import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class CreateJournalActivity extends AppCompatActivity {
 
@@ -64,8 +69,8 @@ public class CreateJournalActivity extends AppCompatActivity {
                 if (title.isEmpty()) {
                     Toast.makeText(context, "Title cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (words.length < 2) {
-                    Toast.makeText(context, "Content must have 2 or more words", Toast.LENGTH_SHORT).show();
+                } else if (words.length < 6) {
+                    Toast.makeText(context, "Content must have at least 6 words", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -87,18 +92,23 @@ public class CreateJournalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void run(Piece piece) {
-                journal.setCover(piece.getJsonObject());
-                journal.saveInBackground(e -> {
-                    if (e != null) {
-                        Log.e(TAG, "error while saving post" + e);
-                        Toast.makeText(context, "Error while saving", Toast.LENGTH_SHORT).show();
-                    }
-                    Log.i(TAG, "post saved successfully");
-                    Intent i = new Intent();
-                    setResult(RESULT_OK, i);
-                    finish();
-                });
+            public void run(Map<String, List<Piece>> options) {
+                try {
+                    Cover cover = new Cover(options);
+                    journal.setCover(cover.getJson());
+                    journal.saveInBackground(e -> {
+                        if (e != null) {
+                            Log.e(TAG, "error while saving post" + e);
+                            Toast.makeText(context, "Error while saving", Toast.LENGTH_SHORT).show();
+                        }
+                        Log.i(TAG, "post saved successfully");
+                        Intent i = new Intent();
+                        setResult(RESULT_OK, i);
+                        finish();
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

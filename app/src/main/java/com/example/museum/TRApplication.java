@@ -3,22 +3,27 @@ package com.example.museum;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.Response;
 import com.example.museum.models.Piece;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TRApplication {
 
-    private static final String TAG = "TRClient";
+    private static final String TAG = "TRApplication";
 
-    private static final int MAX_PIECES = 1;
-    private static final int MAX_KEYWORDS = 1;
+    private static final int MAX_PIECES = 3;
+    private static final int MAX_OPTIONS = 3;
+    private static final int MAX_KEYWORDS = 6;
 
     private static TextRank tr;
     private static MetClient met;
@@ -37,96 +42,98 @@ public class TRApplication {
         }
     }
 
-    // TODO: Fix (No such file or directory) error
-    /*
-    private void POStagger(String content) throws IOException {
-        InputStream enpos = new FileInputStream("/Users/tiffanywang/Documents/Museum/app/src/main/res/raw/en_pos_maxent.bin");
-        pos = new POSModel(enpos);
-        Log.i(TAG, String.valueOf(pos == null));
-        //Instantiating POSTaggerME class
-        POSTaggerME tagger = new POSTaggerME(pos);
-
-        //Tokenizing the sentence using WhitespaceTokenizer class
-        WhitespaceTokenizer whitespaceTokenizer= WhitespaceTokenizer.INSTANCE;
-        String[] tokens = whitespaceTokenizer.tokenize(content);
-
-        //Generating tags
-        String[] tags = tagger.tag(tokens);
-
-        //Instantiating the POSSample class
-        POSSample sample = new POSSample(tokens, tags);
-        Log.i(TAG, sample.toString());
-    }*/
-
     /**
      * Analyzes text using TextRank and finds important keywords.
      * Sends best keyword to search for art.
-     * @contents: contents of text to analyze
-     * @callback: function that happens after analysis is finished (ex. load gallery)
+     * @param contents contents of text to analyze
+     * @param callback function that happens after analysis is finished (ex. load gallery)
      */
     public static void onAnalysis(String contents, Callback callback) {
         //doesn't parse em-dashes correctly
         contents = contents.replace('\u2014', ' ');
 
-        if(contents != null && contents.split(" ").length > 1){
-            ArrayList<TextRank.TokenVertex> rankedTokens = tr.keywordExtraction(contents);
-            List<String> keywords = new ArrayList<>();
-            for(int i = 0; i < rankedTokens.size() && i < MAX_KEYWORDS; i++){
-                TextRank.TokenVertex tv = rankedTokens.get(i);
-                keywords.add(i, tv.getToken());
-            }
-
-            // TODO: find more relevant keyword than first
-            Log.i(TAG, "KEYWORDS: " + String.join(",", keywords));
-            //POStagger(String.join(",", keywords));
-            searchKeyword(keywords.get(0), callback);
+        ArrayList<TextRank.TokenVertex> rankedTokens = tr.keywordExtraction(contents);
+        List<String> keywords = new ArrayList<>();
+        for(int i = 0; i < rankedTokens.size() && i < MAX_KEYWORDS; i++){
+            TextRank.TokenVertex tv = rankedTokens.get(i);
+            keywords.add(i, tv.getToken());
         }
-        else {
-            // TODO: error handling
+
+        // iterate through all keywords to get a list of pieces for each
+        Log.i(TAG, "KEYWORDS: " + String.join(",", keywords));
+        Map<String, List<Piece>> options = new HashMap<>();
+
+        for (int i = 0; i < MAX_KEYWORDS; i += 1) {
+            String currentKey = keywords.get(i);
+            searchKeywords(currentKey, options, new Callback() {
+                @Override
+                public void run(Map<String, List<Piece>> options) {
+                    if (options.size() >= MAX_OPTIONS) {
+                        // ERROR HANDLING:
+                        // * totalValues validation to ensure all values are found
+                        // * final >= comparison may result in more results saved than necessary,
+                        //   but I'm not sure of a better way to skip null queries
+                        int totalValues = 0;
+                        for (int i = 0; i < options.size(); i += 1) {
+                            if (options.containsKey(keywords.get(i))) {
+                                totalValues += options.get(keywords.get(i)).size();
+                            }
+                        }
+                        if (totalValues >= MAX_PIECES * MAX_OPTIONS) {
+                            callback.run(options);
+                        }
+                    }
+                }
+
+                @Override
+                public void run() { }
+
+            }, new Callback() { // error handling, need to skip this key
+                @Override
+                public void run(Map<String, List<Piece>> options) { }
+
+                @Override
+                public void run() {
+                    // if doesn't find any IDs, remove from options and skip this key
+                    options.remove(currentKey);
+                    Log.i(TAG, "SKIPPED SEARCH: " + currentKey);
+                }
+            });
         }
     }
 
     /**
      * Searches MET API based on a given word.
      */
-    private static void searchKeyword(String key, Callback callback) {
+    private static void searchKeywords(String key, Map<String, List<Piece>> options, Callback callback, Callback error) {
         List<Piece> pieces = new ArrayList<>();
+        options.put(key, pieces);
 
         // retrieves art pieces from search
-        met.getSearch(key, arrayResponse -> {
-            try {
-                JSONArray array = arrayResponse.getJSONArray("objectIDs");
-                // if no search results
-                if (array.length() == 0) {
-                    return;
-                }
-
-                // else, iterate through search results
-                int maxCount = Math.min(array.length(), MAX_PIECES);
-                for (int i = 0; i < maxCount; i += 1) {
-                    met.getPiece(array.getInt(i), response -> {
-                        try {
-                            Piece piece = Piece.fromJson(response);
-                            pieces.add(piece);
-                            if (pieces.size() == maxCount) {
-                                Log.i(TAG, "PIECES: " + pieces.toString());
-                                callback.run(pieces.get(0));
+        met.getSearch(key, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject arrayResponse) {
+                try {
+                    JSONArray array = arrayResponse.getJSONArray("objectIDs");
+                    int maxCount = Math.min(array.length(), MAX_PIECES);
+                    for (int i = 0; i < maxCount; i += 1) {
+                        met.getPiece(array.getInt(i), response -> {
+                            try {
+                                Piece piece = Piece.fromJson(response);
+                                pieces.add(piece);
+                                if (pieces.size() == maxCount) {
+                                    Log.i(TAG, "PIECES: " + pieces.toString());
+                                    callback.run(options);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
+                        });
+                    }
+                } catch (JSONException e) {
+                    error.run();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         });
     }
-
-    /*
-    private void loadGallery(List<Piece> pieces) {
-        Intent i = new Intent(this, GalleryActivity.class);
-        i.putExtra("pieces", Parcels.wrap(pieces));
-        context.startActivity(i);
-    }*/
 }

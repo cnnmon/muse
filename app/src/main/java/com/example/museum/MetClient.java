@@ -20,7 +20,6 @@ public class MetClient {
     public static final String TAG = "MetClient";
 
     private final RequestQueue queue;
-
     public MetClient(Context context) {
         this.queue = Volley.newRequestQueue(context);
     }

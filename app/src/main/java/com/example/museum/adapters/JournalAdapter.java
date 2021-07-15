@@ -17,7 +17,6 @@ import com.example.museum.activities.ReadJournalActivity;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
 
-import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.List;
@@ -42,11 +41,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Journal journal = journals.get(position);
-        try {
-            holder.bind(journal);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        holder.bind(journal);
     }
 
     @Override
@@ -67,8 +62,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             tvDate = itemView.findViewById(R.id.tvDate);
         }
 
-        public void bind(Journal journal) throws JSONException {
-            Piece piece = Piece.fromJson(journal.getCover());
+        public void bind(Journal journal) {
+            Piece piece = journal.getPiece();
             Glide.with(context).load(piece.getImageUrl()).into(ivCover);
 
             ivCover.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +78,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                     }
                 }
             });
+
             tvTitle.setText(journal.getTitle());
             tvDate.setText(journal.getSimpleDate());
         }

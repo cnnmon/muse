@@ -23,9 +23,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class JournalActivity extends AppCompatActivity {
+public class CreateJournalActivity extends AppCompatActivity {
 
-    public static final String TAG = "JournalActivity";
+    public static final String TAG = "CreateJournalActivity";
 
     private Context context;
     private EditText etTitle;
@@ -34,15 +34,15 @@ public class JournalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journal);
+        setContentView(R.layout.activity_create_journal);
 
         context = this;
-        etTitle = findViewById(R.id.etTitle);
-        etContent = findViewById(R.id.etContent);
+        etTitle = findViewById(R.id.tvTitle);
+        etContent = findViewById(R.id.tvContent);
 
         TextView tvDate = findViewById(R.id.tvDate);
         Format f = new SimpleDateFormat("MM/dd/yy");
-        String date = "Created at: " + f.format(new Date());
+        String date = f.format(new Date());
         tvDate.setText(date);
 
         FloatingActionButton fabExit = findViewById(R.id.fabExit);
@@ -77,19 +77,18 @@ public class JournalActivity extends AppCompatActivity {
     private void saveJournal(ParseUser currentUser, String title, String content) {
         Journal journal = new Journal();
         journal.setTitle(title);
-        journal.setContents(content);
+        journal.setContent(content);
         journal.setUser(currentUser);
 
-        // TODO: get image
         TRApplication.onAnalysis(content, new Callback() {
             @Override
             public void run() {
-                // Needed for method
+                // Needed to have for callback; isn't called
             }
 
             @Override
             public void run(Piece piece) {
-                journal.setImageUrl(piece.imageURL);
+                journal.setCover(piece.getJsonObject());
                 journal.saveInBackground(e -> {
                     if (e != null) {
                         Log.e(TAG, "error while saving post" + e);

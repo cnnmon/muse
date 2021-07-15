@@ -1,6 +1,7 @@
 package com.example.museum.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.museum.R;
+import com.example.museum.activities.ReadJournalActivity;
 import com.example.museum.models.Journal;
+import com.example.museum.models.Piece;
 
 import org.json.JSONException;
+import org.parceler.Parcels;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHolder> {
@@ -32,13 +34,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
 
     @NonNull
     @Override
-    public JournalAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_journal, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull JournalAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Journal journal = journals.get(position);
         try {
             holder.bind(journal);
@@ -66,13 +68,23 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
         }
 
         public void bind(Journal journal) throws JSONException {
-            // TODO: Connect cover JSON file
-            // Piece piece = Piece.fromJson(journal.getCover());
-            Glide.with(context).load(journal.getImageUrl()).into(ivCover);
+            Piece piece = Piece.fromJson(journal.getCover());
+            Glide.with(context).load(piece.getImageUrl()).into(ivCover);
+
+            ivCover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Journal journal = journals.get(position);
+                        Intent i = new Intent(context, ReadJournalActivity.class);
+                        i.putExtra(Journal.class.getSimpleName(), Parcels.wrap(journal));
+                        context.startActivity(i);
+                    }
+                }
+            });
             tvTitle.setText(journal.getTitle());
-            Format f = new SimpleDateFormat("MM/dd/yy");
-            String date = f.format(journal.getCreatedAt());
-            tvDate.setText(date);
+            tvDate.setText(journal.getSimpleDate());
         }
     }
 }

@@ -5,13 +5,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
+import org.parceler.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Parcel
-public class Piece {
+public class Piece extends JSONObject {
 
+    @Transient
+    public JSONObject jsonObject;
     public int id;
     public String imageURL;
     public String title;
@@ -26,6 +29,7 @@ public class Piece {
 
     public static Piece fromJson(JSONObject jsonObject) throws JSONException {
         Piece piece = new Piece();
+        piece.jsonObject = jsonObject;
         piece.id = jsonObject.getInt("objectID");
         piece.imageURL = jsonObject.getString("primaryImage");
         piece.title = jsonObject.getString("title");
@@ -60,7 +64,7 @@ public class Piece {
         return id;
     }
 
-    public String getImageURL() {
+    public String getImageUrl() {
         return imageURL;
     }
 
@@ -75,4 +79,6 @@ public class Piece {
     public List<String> getTags() {
         return tags;
     }
+
+    public JSONObject getJsonObject() { return jsonObject; }
 }

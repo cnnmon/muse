@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         btnNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, JournalActivity.class);
+                Intent i = new Intent(context, CreateJournalActivity.class);
                 startActivityForResult(i, REQUEST_CODE);
             }
         });

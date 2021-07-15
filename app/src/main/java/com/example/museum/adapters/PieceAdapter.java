@@ -62,7 +62,7 @@ public class PieceAdapter extends RecyclerView.Adapter<PieceAdapter.ViewHolder> 
         public void bind(Piece piece) {
             tvTitle.setText(String.format(piece.getTitle(), " - ", piece.getArtist()));
             tvTags.setText(piece.getTags().toString());
-            Glide.with(context).load(piece.getImageURL()).into(ivPiece);
+            Glide.with(context).load(piece.getImageUrl()).into(ivPiece);
         }
     }
 }

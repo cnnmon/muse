@@ -126,7 +126,7 @@ public class JournalActivity extends AppCompatActivity {
 
     private void toggleEdit(MenuItem icEdit) {
         if (editable) {
-            editable = !editable;
+            editable = false;
             edited = true;
             String title = String.valueOf(etTitle.getText());
             String content = String.valueOf(etContent.getText());
@@ -136,29 +136,26 @@ public class JournalActivity extends AppCompatActivity {
             if (title.length() == 0) {
                 Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (words.length < 6) {
+            } else if (content.length() < 6) {
                 Toast.makeText(this, "Content must have at least 6 words", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // if only title was changed
-            if (titleChanged(title) && !contentChanged(content)) {
-                updateTitle(title);
-                return;
-            }
-            updateJournal(title, content);
+            if (titleChanged(title) && !contentChanged(content)) updateTitle(title);
+            else updateJournal(title, content);
         }
-        else { editable = !editable; }
+        else editable = true;
         initializeEdit(icEdit);
     }
 
     // used to prevent needless updates to database
     private boolean contentChanged(String content) {
-        return content.equals(journal.getContent());
+        return !content.equals(journal.getContent());
     }
 
     private boolean titleChanged(String title) {
-        return title.equals(journal.getTitle());
+        return !title.equals(journal.getTitle());
     }
 
     // visual parts of edit

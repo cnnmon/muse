@@ -21,6 +21,8 @@ import com.example.museum.models.User;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +63,12 @@ public class HomeActivity extends AppCompatActivity {
 
         queryJournals();
         TRApplication.initialize(this);
+    }
+
+    public void readJournalIntent(Journal journal) {
+        Intent i = new Intent(context, JournalActivity.class);
+        i.putExtra(Journal.class.getSimpleName(), Parcels.wrap(journal));
+        startActivityForResult(i, REQUEST_CODE);
     }
 
     private void queryJournals() {

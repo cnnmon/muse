@@ -15,7 +15,7 @@
         android:paddingLeft="15dp"
         android:paddingTop="170dp"
         android:paddingRight="15dp"
-        android:paddingBottom="15dp">
+        android:paddingBottom="30dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 

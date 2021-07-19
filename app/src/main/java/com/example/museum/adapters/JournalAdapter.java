@@ -1,7 +1,6 @@
 package com.example.museum.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.museum.R;
-import com.example.museum.activities.ReadJournalActivity;
+import com.example.museum.activities.HomeActivity;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -72,9 +69,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         Journal journal = journals.get(position);
-                        Intent i = new Intent(context, ReadJournalActivity.class);
-                        i.putExtra(Journal.class.getSimpleName(), Parcels.wrap(journal));
-                        context.startActivity(i);
+                        HomeActivity homeActivity = (HomeActivity) context;
+                        homeActivity.readJournalIntent(journal);
                     }
                 }
             });

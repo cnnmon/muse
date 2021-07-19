@@ -98,10 +98,10 @@ public class CreateJournalActivity extends AppCompatActivity {
                     journal.setCover(cover.getJson());
                     journal.saveInBackground(e -> {
                         if (e != null) {
-                            Log.e(TAG, "error while saving post" + e);
-                            Toast.makeText(context, "Error while saving", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "error while creating journal" + e);
+                            Toast.makeText(context, "Error while creating", Toast.LENGTH_SHORT).show();
                         }
-                        Log.i(TAG, "post saved successfully");
+                        Log.i(TAG, "journal created successfully");
                         Intent i = new Intent();
                         setResult(RESULT_OK, i);
                         finish();

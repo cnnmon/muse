@@ -32,7 +32,12 @@ public class Piece extends JSONObject {
         piece.objectDate = jsonObject.getString("objectDate");
         piece.medium = jsonObject.getString("medium");
         piece.metUrl = jsonObject.getString("objectURL");
+        return piece;
+    }
 
+    // TODO: fill with default values
+    public static Piece emptyPiece() {
+        Piece piece = new Piece();
         return piece;
     }
 

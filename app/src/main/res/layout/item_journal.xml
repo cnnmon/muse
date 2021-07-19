@@ -33,4 +33,23 @@
         android:textColor="@color/gray"
         android:textSize="12sp"
         tools:text="07/03/2021" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDelete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/ivCover"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:cornerRadius="75dp"
+        app:elevation="0dp"
+        app:icon="@drawable/ic_baseline_delete"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="18dp"
+        app:iconTint="@color/white" />
 </RelativeLayout>

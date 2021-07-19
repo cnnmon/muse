@@ -1,7 +1,5 @@
 package com.example.museum.models;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +57,11 @@ public class Cover extends JSONObject {
     }
 
     public Piece getActivePiece() {
-        return options.get(keywords.get(0)).get(0);
+        try {
+            return options.get(activeKeyword).get(activeCover);
+        } catch (Exception e) {
+            return Piece.emptyPiece();
+        }
     }
 
     public JSONObject getJson() throws JSONException {

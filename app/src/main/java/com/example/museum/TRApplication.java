@@ -62,8 +62,8 @@ public class TRApplication {
         // iterate through all keywords to get a list of pieces for each
         Log.i(TAG, "KEYWORDS: " + String.join(",", keywords));
         Map<String, List<Piece>> options = new HashMap<>();
-
-        for (int i = 0; i < MAX_KEYWORDS; i += 1) {
+        int maxCount = Math.min(keywords.size(), MAX_KEYWORDS);
+        for (int i = 0; i < maxCount; i += 1) {
             String currentKey = keywords.get(i);
             searchKeywords(currentKey, options, new Callback() {
                 @Override
@@ -99,6 +99,7 @@ public class TRApplication {
                     Log.i(TAG, "SKIPPED SEARCH: " + currentKey);
                 }
             });
+
         }
     }
 

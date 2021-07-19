@@ -143,7 +143,7 @@ public class JournalActivity extends AppCompatActivity {
 
             // if only title was changed
             if (titleChanged(title) && !contentChanged(content)) updateTitle(title);
-            else updateJournal(title, content);
+            else if (contentChanged(content)) updateJournal(title, content);
         }
         else editable = true;
         initializeEdit(icEdit);

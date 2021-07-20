@@ -6,4 +6,9 @@
         android:icon="@drawable/ic_baseline_edit"
         android:title="Edit"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/icDelete"
+        android:icon="@drawable/ic_baseline_delete"
+        android:title="Delete"
+        app:showAsAction="ifRoom" />
 </menu>

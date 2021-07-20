@@ -48,6 +48,7 @@ public class JournalActivity extends AppCompatActivity {
     private Context context;
     private CollapsingToolbarLayout cToolbar;
     private boolean editable;
+    private int textColor;
     private boolean edited; // prevents needless home updates
 
     @Override
@@ -62,6 +63,7 @@ public class JournalActivity extends AppCompatActivity {
         etContent = findViewById(R.id.etContent);
         ivCover = findViewById(R.id.ivCover);
         context = this;
+        textColor = Color.BLACK;
 
         // unwrap journal
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
@@ -82,22 +84,42 @@ public class JournalActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(home);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // initialize visuals & colors
+        Drawable delete = this.getDrawable(R.drawable.ic_baseline_delete);
+        menu.findItem(R.id.icDelete).setIcon(tint(delete));
         initializeEdit(menu.findItem(R.id.icEdit));
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            if (edited) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            if (edited) { // if any edits were made, notify home to update journals
                 Intent i = new Intent();
                 setResult(RESULT_OK, i);
             }
             finish();
-        } else if (item.getItemId() == R.id.icEdit) {
+        } else if (id == R.id.icEdit) {
             toggleEdit(item);
+        } else if (id == R.id.icDelete) {
+            deleteJournal();
         }
         return true;
+    }
+
+    private void deleteJournal() {
+        journal.deleteInBackground(e -> {
+            if (e != null) {
+                Log.e(TAG, "error while deleting journal" + e);
+                Toast.makeText(context, "Error while deleting", Toast.LENGTH_SHORT).show();
+            }
+            Log.i(TAG, "journal deleted successfully");
+            Intent i = new Intent();
+            setResult(RESULT_OK, i);
+            finish();
+        });
     }
 
     private void updateImage(Piece piece) {
@@ -108,7 +130,7 @@ public class JournalActivity extends AppCompatActivity {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 Palette palette = Palette.from(resource).maximumColorCount(10).generate();
-                Palette.Swatch swatch = palette.getLightVibrantSwatch();
+                Palette.Swatch swatch = palette.getVibrantSwatch();
                 if (swatch == null) swatch = palette.getLightMutedSwatch();
                 if (swatch != null) {
                     cToolbar.setContentScrimColor(swatch.getRgb());
@@ -136,7 +158,7 @@ public class JournalActivity extends AppCompatActivity {
             if (title.length() == 0) {
                 Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (content.length() < 6) {
+            } else if (words.length < 6) {
                 Toast.makeText(this, "Content must have at least 6 words", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -164,12 +186,15 @@ public class JournalActivity extends AppCompatActivity {
                 this.getDrawable(R.drawable.ic_arrow_back);
         Drawable edit = editable ? this.getDrawable(R.drawable.ic_baseline_check) :
                 this.getDrawable(R.drawable.ic_baseline_edit);
-        home.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-        edit.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-        icEdit.setIcon(edit);
-        getSupportActionBar().setHomeAsUpIndicator(home);
+        icEdit.setIcon(tint(edit));
+        getSupportActionBar().setHomeAsUpIndicator(tint(home));
         toggleEdit(etTitle, editable);
         toggleEdit(etContent, editable);
+    }
+
+    private Drawable tint(Drawable drawable) {
+        drawable.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+        return drawable;
     }
 
     // prevent needless cover generation
@@ -187,6 +212,8 @@ public class JournalActivity extends AppCompatActivity {
     private void updateJournal(String title, String content) {
         journal.setTitle(title);
         journal.setContent(content);
+        // so activity doesn't get destroyed before update; causes app to crash
+        getSupportActionBar().setHomeButtonEnabled(false);
 
         TRApplication.onAnalysis(content, new Callback() {
             @Override
@@ -205,6 +232,7 @@ public class JournalActivity extends AppCompatActivity {
                             Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
                         }
                         Log.i(TAG, "journal saved successfully");
+                        getSupportActionBar().setHomeButtonEnabled(true);
                         updateImage(cover.getActivePiece());
                     });
                 } catch (JSONException e) {

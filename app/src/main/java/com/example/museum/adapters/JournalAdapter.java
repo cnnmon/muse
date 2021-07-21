@@ -22,10 +22,17 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
 
     private final Context context;
     private final List<Journal> journals;
+    private static final int BUTTON_VIEW = 1, JOURNAL_VIEW = 2;
 
     public JournalAdapter(Context context, List<Journal> journals) {
         this.context = context;
         this.journals = journals;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) return BUTTON_VIEW;
+        return JOURNAL_VIEW;
     }
 
     @NonNull
@@ -38,7 +45,14 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Journal journal = journals.get(position);
-        holder.bind(journal);
+        switch (holder.getItemViewType()){
+            case BUTTON_VIEW:
+                holder.setButton();
+                break;
+            default:
+                holder.bind(journal);
+                break;
+        }
     }
 
     @Override
@@ -57,6 +71,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             ivCover = itemView.findViewById(R.id.ivCover);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDate = itemView.findViewById(R.id.tvDate);
+
         }
 
         public void bind(Journal journal) {
@@ -70,13 +85,30 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                     if (position != RecyclerView.NO_POSITION) {
                         Journal journal = journals.get(position);
                         HomeActivity homeActivity = (HomeActivity) context;
-                        homeActivity.readJournalIntent(journal);
+                        homeActivity.readJournal(journal);
                     }
                 }
             });
 
             tvTitle.setText(journal.getTitle());
             tvDate.setText(journal.getSimpleDate());
+        }
+
+        // uses dummy journal data to create a "new journal" button in 0 spot
+        public void setButton() {
+            tvTitle.setText("Untitled");
+            tvTitle.setTextColor(context.getColor(R.color.gray));
+            tvDate.setText(Journal.getSimpleDateCurrent());
+            itemView.findViewById(R.id.relativeLayout).setBackground(context.getDrawable(R.drawable.dashed));
+            Glide.with(context).load(context.getDrawable(R.drawable.new_journal)).into(ivCover);
+
+            ivCover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) context;
+                    homeActivity.createJournal();
+                }
+            });
         }
     }
 }

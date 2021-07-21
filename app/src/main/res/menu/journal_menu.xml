@@ -10,5 +10,9 @@
         android:id="@+id/icDelete"
         android:icon="@drawable/ic_baseline_delete"
         android:title="Delete"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/icSettings"
+        android:title="Settings"
+        app:showAsAction="collapseActionView" />
 </menu>

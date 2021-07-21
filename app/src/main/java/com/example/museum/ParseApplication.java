@@ -2,12 +2,28 @@ package com.example.museum;
 
 import android.app.Application;
 
+import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
+import com.example.museum.models.Piece;
 import com.example.museum.models.User;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
+
+import org.json.JSONException;
+
+import java.util.List;
+import java.util.Map;
 
 public class ParseApplication extends Application {
+
+    public static final String TAG = "ParseApplication";
 
     @Override
     public void onCreate() {
@@ -21,4 +37,81 @@ public class ParseApplication extends Application {
                 .build());
     }
 
+    public static void queryJournals(FindCallback<Journal> callback) {
+        ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
+        query.include(Journal.KEY_AUTHOR);
+        query.whereEqualTo(Journal.KEY_AUTHOR, ParseUser.getCurrentUser());
+        query.setLimit(20);
+        query.addDescendingOrder("createdAt");
+        query.findInBackground(callback);
+    }
+
+    public static void saveJournal(String title, String content, SaveCallback callback) {
+        Journal journal = new Journal();
+        journal.setTitle(title);
+        journal.setContent(content);
+        journal.setUser(ParseUser.getCurrentUser());
+
+        TRApplication.onAnalysis(content, new Callback() {
+            @Override
+            public void run() {
+                // Needed to have for callback; isn't called
+            }
+
+            @Override
+            public void run(Map<String, List<Piece>> options) {
+                try {
+                    Cover cover = new Cover(options);
+                    journal.setCover(cover.getJson());
+                    journal.saveInBackground(callback);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    // update journal & regenerate cover
+    public static void updateJournal(Journal journal, String title, String content, SaveCallback callback) {
+        journal.setTitle(title);
+        journal.setContent(content);
+        TRApplication.onAnalysis(content, new Callback() {
+            @Override
+            public void run() {
+                // Needed to have for callback; isn't called
+            }
+
+            @Override
+            public void run(Map<String, List<Piece>> options) {
+                try {
+                    Cover cover = new Cover(options);
+                    journal.setCover(cover.getJson());
+                    journal.saveInBackground(callback);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static void updateTitle(Journal journal, String title, SaveCallback callback) {
+        journal.setTitle(title);
+        journal.saveInBackground(callback);
+    }
+
+    public static void deleteJournal(Journal journal, DeleteCallback callback) {
+        journal.deleteInBackground(callback);
+    }
+
+    public static void loginUser(String username, String password, LogInCallback callback) {
+        ParseUser.logInInBackground(username, password, callback);
+    }
+
+    public static void registerUser(String firstName, String username, String password, SignUpCallback callback) {
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setUsername(username);
+        user.setPassword(password);
+        user.signUpInBackground(callback);
+    }
 }

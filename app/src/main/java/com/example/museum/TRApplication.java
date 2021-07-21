@@ -49,7 +49,7 @@ public class TRApplication {
      * @param callback function that happens after analysis is finished (ex. load gallery)
      */
     public static void onAnalysis(String contents, Callback callback) {
-        //doesn't parse em-dashes correctly
+        // doesn't parse em-dashes correctly
         contents = contents.replace('\u2014', ' ');
 
         ArrayList<TextRank.TokenVertex> rankedTokens = tr.keywordExtraction(contents);

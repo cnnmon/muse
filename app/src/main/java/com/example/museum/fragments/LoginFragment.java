@@ -1,27 +1,32 @@
 package com.example.museum.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.activities.HomeActivity;
 import com.example.museum.activities.LandingActivity;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
+    private Context context;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -42,6 +47,7 @@ public class LoginFragment extends Fragment {
         Button btnLogin = view.findViewById(R.id.btnLogin);
         EditText etUsername = view.findViewById(R.id.etUsername);
         EditText etPassword = view.findViewById(R.id.etPassword);
+        context = getContext();
 
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,21 +61,19 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                loginUser(username, password);
+                ParseApplication.loginUser(username, password, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException e) {
+                        if (e != null) {
+                            ParseUser.logOut();
+                            Toast.makeText(context, "Wrong username or password", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Intent i = new Intent(context, HomeActivity.class);
+                        startActivity(i);
+                    }
+                });
             }
-        });
-    }
-
-    private void loginUser(String username, String password) {
-        ParseUser.logInInBackground(username, password, (user, e) -> {
-            if (e != null) {
-                // TODO: error handling
-                ParseUser.logOut();
-                Log.e(TAG, "issue with login", e);
-                return;
-            }
-            Intent i = new Intent(getContext(), HomeActivity.class);
-            startActivity(i);
         });
     }
 }

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @ParseClassName("Journal")
 public class Journal extends ParseObject {
@@ -38,6 +39,11 @@ public class Journal extends ParseObject {
     public String getSimpleDate() {
         Format f = new SimpleDateFormat("MM/dd/yy");
         return f.format(getCreatedAt());
+    }
+
+    public static String getSimpleDateCurrent() {
+        Format f = new SimpleDateFormat("MM/dd/yy");
+        return f.format(new Date());
     }
 
     public Piece getPiece() {

@@ -4,67 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.HomeActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activities.HomeActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvJournals"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/flContainer"
+        android:name="com.example.museum.fragments.HomeFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingLeft="15dp"
-        android:paddingTop="170dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="30dp">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <LinearLayout
-        android:id="@+id/LinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:text="Hello,"
-            android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:fontFamily="@font/butler"
-                android:textColor="@color/red"
-                android:textSize="34sp"
-                tools:text="Tiffany" />
-
-            <ImageView
-                android:id="@+id/ivSparkle"
-                android:layout_width="40dp"
-                android:layout_height="46dp"
-                android:padding="8dp"
-                app:srcCompat="@drawable/sparkle" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btnNew"
-            android:layout_width="92dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="NEW" />
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

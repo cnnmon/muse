@@ -11,24 +11,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.museum.Callback;
+import com.example.museum.ParseApplication;
 import com.example.museum.R;
-import com.example.museum.TRApplication;
-import com.example.museum.models.Cover;
-import com.example.museum.models.Journal;
-import com.example.museum.models.Piece;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.parse.ParseUser;
-
-import org.json.JSONException;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-public class CreateJournalActivity extends AppCompatActivity {
+public class WriteActivity extends AppCompatActivity {
 
     public static final String TAG = "CreateJournalActivity";
 
@@ -39,7 +32,7 @@ public class CreateJournalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_journal);
+        setContentView(R.layout.activity_write);
 
         context = this;
         etTitle = findViewById(R.id.tvTitle);
@@ -74,29 +67,9 @@ public class CreateJournalActivity extends AppCompatActivity {
                     return;
                 }
 
-                saveJournal(ParseUser.getCurrentUser(), title, content);
-            }
-        });
-    }
-
-    private void saveJournal(ParseUser currentUser, String title, String content) {
-        Journal journal = new Journal();
-        journal.setTitle(title);
-        journal.setContent(content);
-        journal.setUser(currentUser);
-
-        TRApplication.onAnalysis(content, new Callback() {
-            @Override
-            public void run() {
-                // Needed to have for callback; isn't called
-            }
-
-            @Override
-            public void run(Map<String, List<Piece>> options) {
-                try {
-                    Cover cover = new Cover(options);
-                    journal.setCover(cover.getJson());
-                    journal.saveInBackground(e -> {
+                ParseApplication.saveJournal(title, content, new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
                         if (e != null) {
                             Log.e(TAG, "error while creating journal" + e);
                             Toast.makeText(context, "Error while creating", Toast.LENGTH_SHORT).show();
@@ -105,10 +78,8 @@ public class CreateJournalActivity extends AppCompatActivity {
                         Intent i = new Intent();
                         setResult(RESULT_OK, i);
                         finish();
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    }
+                });
             }
         });
     }

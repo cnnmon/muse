@@ -18,7 +18,7 @@
             android:name=".activities.JournalActivity"
             android:windowSoftInputMode="adjustResize"></activity>
         <activity
-            android:name=".activities.CreateJournalActivity"
+            android:name=".activities.WriteActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.LandingActivity"

@@ -1,23 +1,24 @@
 package com.example.museum.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.activities.HomeActivity;
 import com.example.museum.activities.LandingActivity;
-import com.example.museum.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -25,6 +26,7 @@ import com.parse.SignUpCallback;
 public class RegisterFragment extends Fragment {
 
     private static final String TAG = "RegisterFragment";
+    private Context context;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -46,6 +48,7 @@ public class RegisterFragment extends Fragment {
         EditText etName = view.findViewById(R.id.etName);
         EditText etUsername = view.findViewById(R.id.etUsername);
         EditText etPassword = view.findViewById(R.id.etPassword);
+        context = getContext();
 
         tvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,27 +63,18 @@ public class RegisterFragment extends Fragment {
                 String firstName = etName.getText().toString();
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                registerUser(firstName, username, password);
-            }
-        });
-    }
-
-    private void registerUser(String firstName, String username, String password) {
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setUsername(username);
-        user.setPassword(password);
-        user.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    // TODO: error handling
-                    ParseUser.logOut();
-                    Log.e(TAG, "issue with registration", e);
-                    return;
-                }
-                Intent i = new Intent(getContext(), HomeActivity.class);
-                startActivity(i);
+                ParseApplication.registerUser(firstName, username, password, new SignUpCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            ParseUser.logOut();
+                            Toast.makeText(context, "That username exists. Log in instead?", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Intent i = new Intent(context, HomeActivity.class);
+                        startActivity(i);
+                    }
+                });
             }
         });
     }

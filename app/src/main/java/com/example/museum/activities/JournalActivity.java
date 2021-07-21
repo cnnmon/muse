@@ -1,5 +1,6 @@
 package com.example.museum.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,20 +25,19 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.museum.Callback;
+import com.example.museum.ParseApplication;
 import com.example.museum.R;
-import com.example.museum.TRApplication;
-import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONException;
 import org.parceler.Parcels;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 public class JournalActivity extends AppCompatActivity {
 
@@ -69,6 +71,7 @@ public class JournalActivity extends AppCompatActivity {
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
 
         toolbar.setTitle("");
+        toolbar.getOverflowIcon().setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
         setSupportActionBar(toolbar);
 
         etTitle.setText(journal.getTitle());
@@ -76,18 +79,22 @@ public class JournalActivity extends AppCompatActivity {
 
         updateImage(journal.getPiece());
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.journal_menu, menu);
         Drawable home = this.getDrawable(R.drawable.ic_arrow_back);
-        home.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        home.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(home);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        MenuItem item = menu.findItem(R.id.icDelete);
+        SpannableString s = new SpannableString(item.getTitle());
+        s.setSpan(new ForegroundColorSpan(Color.BLACK), 0, s.length(), 0);
+        item.setTitle(s);
+
         // initialize visuals & colors
-        Drawable delete = this.getDrawable(R.drawable.ic_baseline_delete);
-        menu.findItem(R.id.icDelete).setIcon(tint(delete));
         initializeEdit(menu.findItem(R.id.icEdit));
         return true;
     }
@@ -104,22 +111,21 @@ public class JournalActivity extends AppCompatActivity {
         } else if (id == R.id.icEdit) {
             toggleEdit(item);
         } else if (id == R.id.icDelete) {
-            deleteJournal();
+            ParseApplication.deleteJournal(journal, new DeleteCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "error while deleting journal" + e);
+                        Toast.makeText(context, "Error while deleting", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.i(TAG, "journal deleted successfully");
+                    Intent i = new Intent();
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
+            });
         }
         return true;
-    }
-
-    private void deleteJournal() {
-        journal.deleteInBackground(e -> {
-            if (e != null) {
-                Log.e(TAG, "error while deleting journal" + e);
-                Toast.makeText(context, "Error while deleting", Toast.LENGTH_SHORT).show();
-            }
-            Log.i(TAG, "journal deleted successfully");
-            Intent i = new Intent();
-            setResult(RESULT_OK, i);
-            finish();
-        });
     }
 
     private void updateImage(Piece piece) {
@@ -139,8 +145,7 @@ public class JournalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-            }
+            public void onLoadCleared(@Nullable Drawable placeholder) { }
         };
 
         Glide.with(this).asBitmap().load(piece.getImageUrl()).centerCrop().into(target);
@@ -164,8 +169,33 @@ public class JournalActivity extends AppCompatActivity {
             }
 
             // if only title was changed
-            if (titleChanged(title) && !contentChanged(content)) updateTitle(title);
-            else if (contentChanged(content)) updateJournal(title, content);
+            if (titleChanged(title) && !contentChanged(content)) {
+                ParseApplication.updateTitle(journal, title, new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error while updating journal" + e);
+                            Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
+                        }
+                        Log.i(TAG, "journal title updated successfully");
+                    }
+                });
+            } else if (contentChanged(content)) {
+                // so activity doesn't get destroyed before update; causes app to crash
+                Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(false);
+                ParseApplication.updateJournal(journal, title, content, new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "error while updating journal" + e);
+                            Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
+                        }
+                        Log.i(TAG, "journal saved successfully");
+                        Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
+                        updateImage(journal.getPiece());
+                    }
+                });
+            }
         }
         else editable = true;
         initializeEdit(icEdit);
@@ -181,13 +211,12 @@ public class JournalActivity extends AppCompatActivity {
     }
 
     // visual parts of edit
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void initializeEdit(MenuItem icEdit) {
-        Drawable home = editable ? this.getDrawable(R.drawable.ic_outline_close) :
-                this.getDrawable(R.drawable.ic_arrow_back);
-        Drawable edit = editable ? this.getDrawable(R.drawable.ic_baseline_check) :
-                this.getDrawable(R.drawable.ic_baseline_edit);
+        Drawable home = editable ? this.getDrawable(R.drawable.ic_outline_close) : this.getDrawable(R.drawable.ic_arrow_back);
+        Drawable edit = editable ? this.getDrawable(R.drawable.ic_baseline_check) : this.getDrawable(R.drawable.ic_baseline_edit);
         icEdit.setIcon(tint(edit));
-        getSupportActionBar().setHomeAsUpIndicator(tint(home));
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(tint(home));
         toggleEdit(etTitle, editable);
         toggleEdit(etContent, editable);
     }
@@ -195,51 +224,6 @@ public class JournalActivity extends AppCompatActivity {
     private Drawable tint(Drawable drawable) {
         drawable.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
         return drawable;
-    }
-
-    // prevent needless cover generation
-    private void updateTitle(String title) {
-        journal.setTitle(title);
-        journal.saveInBackground(e -> {
-            if (e != null) {
-                Log.e(TAG, "error while updating journal" + e);
-                Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
-            }
-            Log.i(TAG, "journal title updated successfully");
-        });
-    }
-
-    private void updateJournal(String title, String content) {
-        journal.setTitle(title);
-        journal.setContent(content);
-        // so activity doesn't get destroyed before update; causes app to crash
-        getSupportActionBar().setHomeButtonEnabled(false);
-
-        TRApplication.onAnalysis(content, new Callback() {
-            @Override
-            public void run() {
-                // Needed to have for callback; isn't called
-            }
-
-            @Override
-            public void run(Map<String, List<Piece>> options) {
-                try {
-                    Cover cover = new Cover(options);
-                    journal.setCover(cover.getJson());
-                    journal.saveInBackground(e -> {
-                        if (e != null) {
-                            Log.e(TAG, "error while updating journal" + e);
-                            Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
-                        }
-                        Log.i(TAG, "journal saved successfully");
-                        getSupportActionBar().setHomeButtonEnabled(true);
-                        updateImage(cover.getActivePiece());
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     private void toggleEdit(EditText editText, boolean isEnabled) {

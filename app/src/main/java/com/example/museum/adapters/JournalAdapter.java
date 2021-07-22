@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             case BUTTON_VIEW:
                 holder.setButton();
                 break;
-            default:
+            case JOURNAL_VIEW:
                 holder.bind(journal);
                 break;
         }
@@ -71,12 +72,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             ivCover = itemView.findViewById(R.id.ivCover);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDate = itemView.findViewById(R.id.tvDate);
-
         }
 
         public void bind(Journal journal) {
             Piece piece = journal.getPiece();
             Glide.with(context).load(piece.getImageUrl()).into(ivCover);
+            tvTitle.setText(journal.getTitle());
+            tvDate.setText(journal.getSimpleDate());
 
             ivCover.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,14 +86,11 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         Journal journal = journals.get(position);
-                        HomeActivity homeActivity = (HomeActivity) context;
-                        homeActivity.readJournal(journal);
+                        HomeActivity activity = (HomeActivity) context;
+                        activity.readJournal(journal);
                     }
                 }
             });
-
-            tvTitle.setText(journal.getTitle());
-            tvDate.setText(journal.getSimpleDate());
         }
 
         // uses dummy journal data to create a "new journal" button in 0 spot
@@ -99,7 +98,9 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             tvTitle.setText("Untitled");
             tvTitle.setTextColor(context.getColor(R.color.gray));
             tvDate.setText(Journal.getSimpleDateCurrent());
-            itemView.findViewById(R.id.relativeLayout).setBackground(context.getDrawable(R.drawable.dashed));
+
+            RelativeLayout imageLayout = itemView.findViewById(R.id.relativeLayout);
+            imageLayout.setBackground(context.getDrawable(R.drawable.dashed));
             Glide.with(context).load(context.getDrawable(R.drawable.new_journal)).into(ivCover);
 
             ivCover.setOnClickListener(new View.OnClickListener() {

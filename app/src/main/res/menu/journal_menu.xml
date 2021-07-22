@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/icSettings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/icEdit"
         android:icon="@drawable/ic_baseline_edit"
         android:title="Edit"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/icDelete"
-        android:icon="@drawable/ic_baseline_delete"
-        android:title="Delete"
-        app:showAsAction="collapseActionView" />
-    <item
-        android:id="@+id/icSettings"
-        android:title="Settings"
-        app:showAsAction="collapseActionView" />
 </menu>

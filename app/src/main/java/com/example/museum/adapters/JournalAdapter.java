@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.museum.R;
 import com.example.museum.activities.HomeActivity;
+import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
 
@@ -75,7 +76,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
         }
 
         public void bind(Journal journal) {
-            Piece piece = journal.getPiece();
+            Cover cover = journal.getCover();
+            Piece piece = cover.getPiece();
             Glide.with(context).load(piece.getImageUrl()).into(ivCover);
             tvTitle.setText(journal.getTitle());
             tvDate.setText(journal.getSimpleDate());

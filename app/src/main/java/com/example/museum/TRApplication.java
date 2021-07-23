@@ -21,8 +21,7 @@ public class TRApplication {
 
     private static final String TAG = "TRApplication";
 
-    private static final int MAX_PIECES = 3;
-    private static final int MAX_OPTIONS = 3;
+    public static final int MAX_OPTIONS = 3;
     private static final int MAX_KEYWORDS = 6;
 
     private static TextRank tr;
@@ -79,7 +78,7 @@ public class TRApplication {
                                 totalValues += options.get(keywords.get(i)).size();
                             }
                         }
-                        if (totalValues >= MAX_PIECES * MAX_OPTIONS) {
+                        if (totalValues >= MAX_OPTIONS * MAX_OPTIONS) {
                             callback.run(options);
                         }
                     }
@@ -116,7 +115,7 @@ public class TRApplication {
             public void onResponse(JSONObject arrayResponse) {
                 try {
                     JSONArray array = arrayResponse.getJSONArray("objectIDs");
-                    int maxCount = Math.min(array.length(), MAX_PIECES);
+                    int maxCount = Math.min(array.length(), MAX_OPTIONS);
                     for (int i = 0; i < maxCount; i += 1) {
                         met.getPiece(array.getInt(i), response -> {
                             try {

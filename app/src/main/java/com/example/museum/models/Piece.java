@@ -65,6 +65,14 @@ public class Piece extends JSONObject {
         return title;
     }
 
+    public String getArtist() { return artist; }
+
+    public String getMedium() { return medium; }
+
+    public String getDepartment() { return department; }
+
+    public String getObjectDate() { return objectDate; }
+
     // format into my jsonObject
     public JSONObject getJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();

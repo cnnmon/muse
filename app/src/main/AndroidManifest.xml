@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Museum">
-        <activity android:name=".activities.ProfileActivity"></activity>
+        <activity android:name=".activities.OptionsActivity"></activity>
+        <activity android:name=".activities.ProfileActivity" />
         <activity
             android:name=".activities.ReadActivity"
             android:windowSoftInputMode="adjustResize" />

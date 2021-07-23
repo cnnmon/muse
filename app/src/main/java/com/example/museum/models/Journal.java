@@ -23,7 +23,17 @@ public class Journal extends ParseObject {
 
     public String getTitle() { return getString(KEY_TITLE); }
     public void setTitle(String title) { put(KEY_TITLE, title); }
-    public JSONObject getCover() { return getJSONObject(KEY_COVER); }
+
+    public Cover getCover() {
+        JSONObject jsonObject = getJSONObject(KEY_COVER);
+        try {
+            return Cover.fromJson(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void setCover(JSONObject cover) { put(KEY_COVER, cover); }
     public String getContent() { return getString(KEY_CONTENTS); }
     public void setContent(String contents) { put(KEY_CONTENTS, contents); }
@@ -44,15 +54,5 @@ public class Journal extends ParseObject {
     public static String getSimpleDateCurrent() {
         Format f = new SimpleDateFormat("MM/dd/yy");
         return f.format(new Date());
-    }
-
-    public Piece getPiece() {
-        JSONObject coverObject = getCover();
-        try {
-            return Cover.getActivePiece(coverObject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

@@ -51,12 +51,7 @@ public class Cover extends JSONObject {
         return cover;
     }
 
-    public static Piece getActivePiece(JSONObject jsonObject) throws JSONException {
-        Cover cover = fromJson(jsonObject);
-        return cover.getActivePiece();
-    }
-
-    public Piece getActivePiece() {
+    public Piece getPiece() {
         try {
             return options.get(activeKeyword).get(activeCover);
         } catch (Exception e) {
@@ -82,5 +77,30 @@ public class Cover extends JSONObject {
 
         jsonObject.put("options", optionsObject);
         return jsonObject;
+    }
+
+    public void setActiveCover(String keyword, int index) {
+        activeKeyword = keyword;
+        activeCover = index;
+    }
+
+    public String getActiveKeyword() { return activeKeyword; }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public List<Piece> getOptions(String keyword) {
+        return options.get(keyword);
+    }
+
+    public void removeFromOptions(List<String> keywords) {
+        for (int i = 0; i < keywords.size(); i += 1) {
+            options.remove(keywords.get(i));
+        }
+    }
+
+    public int getOptionsSize() {
+        return options.size();
     }
 }

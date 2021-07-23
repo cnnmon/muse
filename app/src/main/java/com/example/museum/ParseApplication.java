@@ -18,6 +18,7 @@ import com.parse.SignUpCallback;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,12 +56,25 @@ public class ParseApplication extends Application {
         TRApplication.onAnalysis(content, new Callback() {
             @Override
             public void run() {
-                // Needed to have for callback; isn't called
+                // needed to have for callback; isn't called
             }
 
             @Override
             public void run(Map<String, List<Piece>> options) {
                 try {
+                    List<String> toRemove = new ArrayList<>();
+
+                    // prune empty objects in options
+                    for (String key : options.keySet()) {
+                        if (options.get(key).size() == 0) {
+                            toRemove.add(key);
+                        }
+                    }
+
+                    for (String key : toRemove) {
+                        options.remove(key);
+                    }
+
                     Cover cover = new Cover(options);
                     journal.setCover(cover.getJson());
                     journal.saveInBackground(callback);
@@ -113,5 +127,14 @@ public class ParseApplication extends Application {
         user.setUsername(username);
         user.setPassword(password);
         user.signUpInBackground(callback);
+    }
+
+    public static void updateActiveCover(Journal journal, Cover cover, SaveCallback callback) {
+        try {
+            journal.setCover(cover.getJson());
+            journal.saveInBackground(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

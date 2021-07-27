@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,10 +17,12 @@ import androidx.fragment.app.Fragment;
 import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.activities.HomeActivity;
-import com.example.museum.activities.LandingActivity;
+import com.example.museum.activities.LoginActivity;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
 public class RegisterFragment extends Fragment {
 
@@ -42,9 +43,9 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LandingActivity landingActivity = (LandingActivity) getContext();
+        LoginActivity landingActivity = (LoginActivity) getContext();
         TextView tvLogin = view.findViewById(R.id.tvLogin);
-        Button btnRegister = view.findViewById(R.id.btnRegister);
+        CircularProgressButton btnRegister = view.findViewById(R.id.btnRegister);
         EditText etName = view.findViewById(R.id.etName);
         EditText etUsername = view.findViewById(R.id.etUsername);
         EditText etPassword = view.findViewById(R.id.etPassword);
@@ -60,6 +61,7 @@ public class RegisterFragment extends Fragment {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnRegister.startAnimation();
                 String firstName = etName.getText().toString();
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
@@ -67,12 +69,14 @@ public class RegisterFragment extends Fragment {
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
+                            btnRegister.revertAnimation();
                             ParseUser.logOut();
-                            Toast.makeText(context, "That username exists. Log in instead?", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Error signing up", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         Intent i = new Intent(context, HomeActivity.class);
                         startActivity(i);
+                        btnRegister.revertAnimation();
                     }
                 });
             }

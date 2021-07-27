@@ -2,6 +2,8 @@ package com.example.museum.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
 import com.google.android.material.tabs.TabLayout;
+import com.r0adkll.slidr.Slidr;
 
 import org.parceler.Parcels;
 
@@ -37,7 +40,6 @@ public class OptionsActivity extends AppCompatActivity {
     private TextView tvName;
     private TextView tvArtist;
     private TextView tvDetails;
-    private TextView tvDetailsKeywords;
     private List<String> keywords;
 
     @SuppressLint("SetTextI18n")
@@ -45,6 +47,9 @@ public class OptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+
+        // slide right to return to home
+        Slidr.attach(this);
 
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
         cover = journal.getCover();
@@ -59,12 +64,7 @@ public class OptionsActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tvName);
         tvArtist = findViewById(R.id.tvArtist);
         tvDetails = findViewById(R.id.tvDetails);
-        tvDetailsKeywords = findViewById(R.id.tvDetailsKeywords);
-
         keywords = cover.getKeywords();
-        tvDetailsKeywords.setText("Your keywords for this entry: " +
-                keywords.get(0) + ", " + keywords.get(1) + ", and " + keywords.get(2) +
-                ". The above piece was chosen based on one of those.");
 
         initActiveCover(cover.getPiece());
         initTabs();
@@ -73,7 +73,7 @@ public class OptionsActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void initActiveCover(Piece piece) {
         tvName.setText(piece.getTitle());
-        tvArtist.setText(piece.getArtist());
+        tvArtist.setText(piece.getArtist().isEmpty() ? "Unknown" : piece.getArtist());
         tvDetails.setText(piece.getMedium() + ", " + piece.getObjectDate());
         Glide.with(this).load(piece.getImageUrl()).into(ivCover);
     }
@@ -122,6 +122,13 @@ public class OptionsActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_arrow_back));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
         return super.onCreateOptionsMenu(menu);
     }
 }

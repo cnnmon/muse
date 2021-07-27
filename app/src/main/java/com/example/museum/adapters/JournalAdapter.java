@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -82,7 +82,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             tvTitle.setText(journal.getTitle());
             tvDate.setText(journal.getSimpleDate());
 
-            ivCover.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
@@ -101,11 +101,14 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             tvTitle.setTextColor(context.getColor(R.color.gray));
             tvDate.setText(Journal.getSimpleDateCurrent());
 
-            RelativeLayout imageLayout = itemView.findViewById(R.id.relativeLayout);
-            imageLayout.setBackground(context.getDrawable(R.drawable.dashed));
+            ImageView border = itemView.findViewById(R.id.border);
+            Glide.with(context).load(context.getDrawable(R.drawable.dashed_transparent)).into(border);
             Glide.with(context).load(context.getDrawable(R.drawable.new_journal)).into(ivCover);
 
-            ivCover.setOnClickListener(new View.OnClickListener() {
+            LinearLayout textLayout = itemView.findViewById(R.id.textLayout);
+            textLayout.setVisibility(View.GONE);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) context;

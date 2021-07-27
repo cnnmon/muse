@@ -5,49 +5,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/beige"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/header"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:background="@color/beige"
-        android:orientation="horizontal">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_baseline_check"
-            app:backgroundTint="@color/white"
-            app:useCompatPadding="true" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabExit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="false"
-            android:src="@drawable/ic_outline_close"
-            app:backgroundTint="@color/white"
-            app:useCompatPadding="true" />
-    </RelativeLayout>
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="-10dp"
+        android:background="@drawable/outlined_white"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="30dp">
 
         <EditText
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/outlined_edit_text"
             android:ems="10"
+            android:fontFamily="@font/lexenddeca"
             android:hint="Title"
             android:inputType="textPersonName" />
 
@@ -55,7 +39,9 @@
             android:id="@+id/tvDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="-10dp"
+            android:fontFamily="@font/skmodernist"
             android:textColor="@color/gray"
             tools:text="7/14/21" />
 
@@ -66,8 +52,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/outlined_edit_text"
             android:ems="10"
+            android:fontFamily="@font/skmodernist"
             android:gravity="start|top"
-            android:hint="How are you doing today?"
+            android:hint="What's on your mind?"
             android:inputType="textMultiLine"
             android:minLines="20"
             android:textSize="14sp" />

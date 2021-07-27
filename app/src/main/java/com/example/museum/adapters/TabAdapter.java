@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.museum.TRApplication;
-import com.example.museum.fragments.OptionFragment;
+import com.example.museum.fragments.TabFragment;
 import com.example.museum.models.Cover;
 import com.example.museum.models.Piece;
 
@@ -30,7 +30,7 @@ public class TabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         String keyword = cover.getKeywords().get(position);
         List<Piece> pieces = cover.getOptions(keyword);
-        OptionFragment tab = OptionFragment.newInstance(keyword, pieces);
+        TabFragment tab = TabFragment.newInstance(keyword, pieces);
         return tab;
     }
 

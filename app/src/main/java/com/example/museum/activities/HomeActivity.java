@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.museum.ParseApplication;
 import com.example.museum.R;
-import com.example.museum.TRApplication;
 import com.example.museum.adapters.JournalAdapter;
 import com.example.museum.models.Journal;
 import com.example.museum.models.User;
@@ -41,8 +40,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        TRApplication.initialize(this);
 
         TextView tvName = findViewById(R.id.tvName);
         User user = (User) ParseUser.getCurrentUser();

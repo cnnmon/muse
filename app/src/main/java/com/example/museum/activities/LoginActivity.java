@@ -8,11 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.museum.R;
+import com.example.museum.TRApplication;
 import com.example.museum.fragments.LoginFragment;
 import com.example.museum.fragments.RegisterFragment;
 import com.parse.ParseUser;
 
-public class LandingActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LandingActivity";
 
@@ -23,7 +24,9 @@ public class LandingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_landing);
+        setContentView(R.layout.activity_login);
+
+        TRApplication.initialize(this);
 
         fragmentManager = getSupportFragmentManager();
         login = new LoginFragment();

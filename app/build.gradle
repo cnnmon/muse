@@ -75,4 +75,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     // Animation
     implementation 'com.factor:bouncy:1.8'
+    implementation 'com.r0adkll:slidableactivity:2.1.0'
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
 }

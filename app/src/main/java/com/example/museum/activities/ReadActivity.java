@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.example.museum.models.Piece;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
+import com.r0adkll.slidr.Slidr;
 
 import org.parceler.Parcels;
 
@@ -45,6 +48,7 @@ public class ReadActivity extends AppCompatActivity {
     private ImageView ivCover;
     private EditText etTitle;
     private EditText etContent;
+    private TextView tvDate;
     private Toolbar toolbar;
     private Menu menu;
     private CollapsingToolbarLayout cToolbar;
@@ -57,6 +61,9 @@ public class ReadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
 
+        // slide right to return to home
+        Slidr.attach(this);
+
         context = this;
 
         // unwrap journal
@@ -65,11 +72,13 @@ public class ReadActivity extends AppCompatActivity {
 
         etTitle = findViewById(R.id.etTitle);
         etContent = findViewById(R.id.etContent);
+        tvDate = findViewById(R.id.tvDate);
         ivCover = findViewById(R.id.ivCover);
         cToolbar = findViewById(R.id.cToolbar);
 
         etTitle.setText(journal.getTitle());
         etContent.setText(journal.getContent());
+        tvDate.setText(journal.getSimpleDate());
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -90,7 +99,7 @@ public class ReadActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             goHome(edited);
-        } else if (id == R.id.icEdit) {
+        } else if (id == R.id.icSave) {
             toggleEdit(item);
         } else if (id == R.id.icOptions) {
             Intent i = new Intent(this, OptionsActivity.class);
@@ -102,13 +111,22 @@ public class ReadActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.journal_menu, menu);
+        getMenuInflater().inflate(R.menu.read_menu, menu);
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_arrow_back));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         menu.findItem(R.id.icOptions).setIcon(getDrawable(R.drawable.ic_baseline_settings_24));
-        initializeEdit(menu.findItem(R.id.icEdit));
+        initializeEdit(menu.findItem(R.id.icSave));
         this.menu = menu;
+
+        // tint black
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

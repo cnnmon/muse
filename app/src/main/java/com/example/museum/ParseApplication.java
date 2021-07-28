@@ -63,19 +63,7 @@ public class ParseApplication extends Application {
             @Override
             public void run(Map<String, List<Piece>> options) {
                 try {
-                    List<String> toRemove = new ArrayList<>();
-
-                    // prune empty objects in options
-                    for (String key : options.keySet()) {
-                        if (options.get(key).size() == 0) {
-                            toRemove.add(key);
-                        }
-                    }
-
-                    for (String key : toRemove) {
-                        options.remove(key);
-                    }
-
+                    prune(options);
                     Cover cover = new Cover(options);
                     journal.setCover(cover.getJson());
                     journal.saveInBackground(callback);
@@ -84,6 +72,19 @@ public class ParseApplication extends Application {
                 }
             }
         });
+    }
+
+    private static void prune(Map<String, List<Piece>> options) {
+        List<String> toRemove = new ArrayList<>();
+        // prune empty objects in options
+        for (String key : options.keySet()) {
+            if (options.get(key).size() == 0) {
+                toRemove.add(key);
+            }
+        }
+        for (String key : toRemove) {
+            options.remove(key);
+        }
     }
 
     // update journal & regenerate cover
@@ -99,6 +100,7 @@ public class ParseApplication extends Application {
             @Override
             public void run(Map<String, List<Piece>> options) {
                 try {
+                    prune(options);
                     Cover cover = new Cover(options);
                     journal.setCover(cover.getJson());
                     journal.saveInBackground(callback);

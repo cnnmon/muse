@@ -1,5 +1,7 @@
 package com.example.museum.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,8 @@ import java.util.Map;
 
 @Parcel
 public class Cover extends JSONObject {
+
+    private static final String TAG = "Cover";
 
     String activeKeyword;
     int activeCover;
@@ -47,7 +51,7 @@ public class Cover extends JSONObject {
             List<Piece> pieces = Piece.fromJsonArray(optionsObject.getJSONArray(key));
             cover.options.put(key, pieces);
         }
-
+        Log.i(TAG, String.join(",", cover.keywords));
         return cover;
     }
 

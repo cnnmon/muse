@@ -95,6 +95,7 @@ public class TRApplication {
                 public void run() {
                     // if doesn't find any IDs, remove from options and skip this key
                     options.remove(currentKey);
+                    keywords.remove(currentKey);
                     Log.i(TAG, "SKIPPED SEARCH: " + currentKey);
                 }
             });

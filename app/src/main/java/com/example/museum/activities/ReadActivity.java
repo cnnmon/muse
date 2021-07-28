@@ -135,6 +135,7 @@ public class ReadActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(isVisible);
         if (menu != null) { // else crashes if clicked too fast
             menu.findItem(R.id.icOptions).setVisible(isVisible);
+            menu.findItem(R.id.icSave).setVisible(isVisible);
         }
     }
 
@@ -195,6 +196,7 @@ public class ReadActivity extends AppCompatActivity {
                     Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
                 }
                 Log.i(TAG, "journal saved successfully");
+                cover = journal.getCover();
                 updateImage(cover.getPiece());
             }
         });

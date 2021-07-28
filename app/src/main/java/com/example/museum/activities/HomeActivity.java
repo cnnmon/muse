@@ -4,23 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.adapters.JournalAdapter;
+import com.example.museum.fragments.CalendarFragment;
+import com.example.museum.fragments.HomeFragment;
 import com.example.museum.models.Journal;
-import com.example.museum.models.User;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -31,38 +32,41 @@ public class HomeActivity extends AppCompatActivity {
     public static final String TAG = "HomeActivity";
     public static int REQUEST_CODE = 42;
 
-    private JournalAdapter adapter;
     private Context context;
-
+    public JournalAdapter adapter;
     public List<Journal> allJournals;
+
+    private FragmentManager fragmentManager;
+    private HomeFragment home;
+    private CalendarFragment calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        TextView tvName = findViewById(R.id.tvName);
-        User user = (User) ParseUser.getCurrentUser();
-        tvName.setText("Hi " + user.getFirstName() + "! \uD83D\uDC4B");
-        ImageView ivProfile = findViewById(R.id.ivProfile);
-
         context = this;
         allJournals = new ArrayList<>();
         adapter = new JournalAdapter(this, allJournals);
 
-        RecyclerView rvJournals = findViewById(R.id.rvJournals);
-        rvJournals.setAdapter(adapter);
-        rvJournals.setLayoutManager(new GridLayoutManager(this, 2));
-
-        ivProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, ProfileActivity.class);
-                startActivity(i);
-            }
-        });
+        fragmentManager = getSupportFragmentManager();
+        home = new HomeFragment();
+        calendar = new CalendarFragment();
 
         queryJournals();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.btmNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                Fragment fragment = home;
+                if (item.getItemId() == R.id.miCalendar) {
+                    fragment = calendar;
+                }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                return true;
+            }
+        });
     }
 
     public void createJournal() {
@@ -94,7 +98,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == HomeActivity.REQUEST_CODE && resultCode == RESULT_OK) queryJournals();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.flContainer);
+        fragment.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

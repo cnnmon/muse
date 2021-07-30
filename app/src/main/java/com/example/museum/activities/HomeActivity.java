@@ -1,8 +1,8 @@
 package com.example.museum.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.museum.ParseApplication;
 import com.example.museum.R;
@@ -26,15 +27,16 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
 
     public static final String TAG = "HomeActivity";
     public static int REQUEST_CODE = 42;
 
-    private Context context;
     public JournalAdapter adapter;
     public List<Journal> allJournals;
+    public Map<String, List<Journal>> datedJournals;
 
     private FragmentManager fragmentManager;
     private HomeFragment home;
@@ -45,15 +47,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        context = this;
         allJournals = new ArrayList<>();
+        datedJournals = new ArrayMap<>();
         adapter = new JournalAdapter(this, allJournals);
+
+        queryJournals();
 
         fragmentManager = getSupportFragmentManager();
         home = new HomeFragment();
         calendar = new CalendarFragment();
-
-        queryJournals();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.btmNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -63,7 +65,9 @@ public class HomeActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.miCalendar) {
                     fragment = calendar;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);
+                ft.replace(R.id.flContainer, fragment).commit();
                 return true;
             }
         });
@@ -82,6 +86,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void queryJournals() {
         allJournals.clear();
+        datedJournals.clear();
         allJournals.add(new Journal()); // dummy object to fill the spot for a "new journal" button
         ParseApplication.queryJournals(new FindCallback<Journal>() {
             @Override
@@ -92,6 +97,20 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 allJournals.addAll(journals);
                 adapter.notifyDataSetChanged();
+
+                // generate hashmap so decorator has easier time processing data
+                for (int i = 0; i < journals.size(); i += 1) {
+                    Journal j = journals.get(i);
+                    String date = j.getSimpleDate();
+
+                    if (datedJournals.containsKey(date)) {
+                        datedJournals.get(date).add(j);
+                    } else {
+                        List<Journal> journalsAtDate = new ArrayList<>();
+                        journalsAtDate.add(j);
+                        datedJournals.put(date, journalsAtDate);
+                    }
+                }
             }
         });
     }

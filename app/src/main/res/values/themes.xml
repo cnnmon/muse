@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Museum" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:textViewStyle">@font/skmodernist</item>
+        <item name="android:fontFamily">@font/skmodernist</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryVariant">@color/black</item>
@@ -24,6 +24,10 @@
 
     <style name="LaunchTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/background_launch</item>
+    </style>
+
+    <style name="CalendarTheme" parent="TextAppearance.MaterialCalendarWidget.Header">
+        <item name="android:fontFamily">@font/skmodernist</item>
     </style>
 
 </resources>

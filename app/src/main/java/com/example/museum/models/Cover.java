@@ -98,12 +98,6 @@ public class Cover extends JSONObject {
         return options.get(keyword);
     }
 
-    public void removeFromOptions(List<String> keywords) {
-        for (int i = 0; i < keywords.size(); i += 1) {
-            options.remove(keywords.get(i));
-        }
-    }
-
     public int getOptionsSize() {
         return options.size();
     }

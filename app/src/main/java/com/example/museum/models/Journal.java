@@ -46,13 +46,13 @@ public class Journal extends ParseObject {
     public ParseFile getImage() { return getParseFile(KEY_IMAGE); }
     public void setImage(ParseFile image) { put(KEY_IMAGE, image); }
 
-    public String getSimpleDate() {
-        Format f = new SimpleDateFormat("MM/dd/yy");
-        return f.format(getCreatedAt());
+    public String getSimpleDate() { return getSimpleDate(getCreatedAt()); }
+    public static String getSimpleDateCurrent() {
+        return getSimpleDate(new Date());
     }
 
-    public static String getSimpleDateCurrent() {
+    public static String getSimpleDate(Date date) {
         Format f = new SimpleDateFormat("MM/dd/yy");
-        return f.format(new Date());
+        return f.format(date);
     }
 }

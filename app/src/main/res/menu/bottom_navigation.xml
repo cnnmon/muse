@@ -12,6 +12,6 @@
         android:id="@+id/miCalendar"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_calendar_today"
-        android:title="logout"
+        android:title="calendar"
         app:showAsAction="ifRoom" />
 </menu>

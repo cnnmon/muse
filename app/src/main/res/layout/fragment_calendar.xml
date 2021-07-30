@@ -7,9 +7,66 @@
     android:clickable="true"
     android:focusable="true">
 
-    <CalendarView
+    <com.factor.bouncy.BouncyNestedScrollView
+        android:id="@+id/ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/calendarView" />
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/lexenddeca"
+                android:text="Calendar View 📅"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/outlined_white"
+                android:padding="10dp"
+                app:mcv_calendarMode="month"
+                app:mcv_dateTextAppearance="@style/CalendarTheme"
+                app:mcv_firstDayOfWeek="thursday"
+                app:mcv_headerTextAppearance="@style/CalendarTheme"
+                app:mcv_selectionColor="@color/red"
+                app:mcv_showOtherDates="all"
+                app:mcv_tileSize="match_parent"
+                app:mcv_titleAnimationOrientation="vertical"
+                app:mcv_weekDayTextAppearance="@style/CalendarTheme">
+
+            </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/black" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvJournals"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:paddingBottom="50dp" />
+
+        </LinearLayout>
+    </com.factor.bouncy.BouncyNestedScrollView>
 
 </FrameLayout>

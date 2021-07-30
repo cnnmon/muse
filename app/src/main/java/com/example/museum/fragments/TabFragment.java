@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +23,6 @@ import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TabFragment extends Fragment {
@@ -69,12 +69,14 @@ public class TabFragment extends Fragment {
         ImageView ivCoverA = view.findViewById(R.id.ivCoverA);
         ImageView ivCoverB = view.findViewById(R.id.ivCoverB);
         ImageView ivCoverC = view.findViewById(R.id.ivCoverC);
-        List<ImageView> images = new ArrayList<>();
-        images.add(ivCoverA);
-        images.add(ivCoverB);
-        images.add(ivCoverC);
+        List<ImageView> images = List.of(ivCoverA, ivCoverB, ivCoverC);
 
-        for (int i = 0; i < images.size() && i < pieces.size(); i += 1) {
+        CardView cardViewA = view.findViewById(R.id.cardViewA);
+        CardView cardViewB = view.findViewById(R.id.cardViewB);
+        CardView cardViewC = view.findViewById(R.id.cardViewC);
+        List<CardView> cards = List.of(cardViewA, cardViewB, cardViewC);
+
+        for (int i = 0; i < pieces.size(); i += 1) {
             int index = i;
             ImageView image = images.get(index);
             Piece piece = pieces.get(index);
@@ -93,6 +95,11 @@ public class TabFragment extends Fragment {
                     });
                 }
             });
+        }
+
+        // if has more spots than results
+        for (int i = pieces.size(); i < cards.size(); i += 1) {
+            cards.get(i).setVisibility(View.INVISIBLE);
         }
     }
 }

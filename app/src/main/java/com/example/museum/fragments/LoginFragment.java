@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,14 +49,14 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         LoginActivity landingActivity = (LoginActivity) getContext();
-        TextView tvRegister = view.findViewById(R.id.tvRegister);
+        Button btnRegister = view.findViewById(R.id.btnRegister);
         EditText etUsername = view.findViewById(R.id.etUsername);
         EditText etPassword = view.findViewById(R.id.etPassword);
 
         context = getContext();
         CircularProgressButton btnLogin = view.findViewById(R.id.btnLogin);
 
-        tvRegister.setOnClickListener(new View.OnClickListener() {
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 landingActivity.fragmentManager.beginTransaction().replace(R.id.flContainer, landingActivity.register).commit();

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.LoginFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".fragments.LoginFragment">
 
     <TextView
         android:id="@+id/textView"
@@ -14,6 +14,7 @@
         android:layout_marginBottom="10dp"
         android:fontFamily="@font/lexenddeca"
         android:text="Register"
+        android:textColor="@color/black"
         android:textSize="24sp" />
 
     <EditText
@@ -80,16 +81,16 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/skmodernist"
         android:gravity="center"
-        android:text="Already have an account?" />
+        android:text="Already have an account?"
+        android:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/tvLogin"
+    <Button
+        android:id="@+id/btnLogin"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="@font/skmodernist"
-        android:gravity="center"
-        android:text="Login"
-        android:textColor="@color/red" />
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/lexenddeca"
+        android:text="Login" />
 
 </LinearLayout>

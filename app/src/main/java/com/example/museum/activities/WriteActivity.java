@@ -93,7 +93,7 @@ public class WriteActivity extends AppCompatActivity {
             return;
         }
 
-        ParseApplication.saveJournal(title, content, new SaveCallback() {
+        ParseApplication.get().saveJournal(title, content, new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null) {

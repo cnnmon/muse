@@ -107,7 +107,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                     builder.setMessage("Delete \"" + journal.getTitle() + "\" permanently?")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    ParseApplication.deleteJournal(journal, new DeleteCallback() {
+                                    ParseApplication.get().deleteJournal(journal, new DeleteCallback() {
                                         @Override
                                         public void done(ParseException e) {
                                             HomeActivity activity = (HomeActivity) context;

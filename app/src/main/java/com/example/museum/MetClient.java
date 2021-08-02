@@ -1,8 +1,8 @@
 package com.example.museum;
 
-/*
- * responsible for communicating with the MET REST API
- * documentation: https://metmuseum.github.io/
+/**
+ * Responsible for communicating with the MET REST API
+ * Documentation: https://metmuseum.github.io/
  *
 */
 
@@ -18,14 +18,16 @@ import org.json.JSONObject;
 
 public class MetClient {
 
-    public static final String TAG = "MetClient";
+    private static final String TAG = "MetClient";
 
     private final RequestQueue queue;
     public MetClient(Context context) {
         this.queue = Volley.newRequestQueue(context);
     }
 
-    // searches for keywords & returns a list of piece IDs
+    /**
+     * Searches for keywords & returns a list of piece IDs
+     */
     public void getSearch(String term, Response.Listener<JSONObject> handler) {
         String URL = String.format("https://collectionapi.metmuseum.org/public/collection/v1/search?q=%s", term);
         JsonObjectRequest jsonObjectRequest =
@@ -33,7 +35,9 @@ public class MetClient {
         queue.add(jsonObjectRequest);
     }
 
-    // gets object information
+    /**
+     * Gets object details from a piece ID.
+     */
     public void getPiece(int id, Response.Listener<JSONObject> handler) {
         String URL = String.format("https://collectionapi.metmuseum.org/public/collection/v1/objects/%s", id);
         JsonObjectRequest jsonObjectRequest =

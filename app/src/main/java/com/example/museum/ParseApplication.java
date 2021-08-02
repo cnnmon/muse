@@ -1,6 +1,7 @@
 package com.example.museum;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
@@ -25,21 +26,45 @@ import java.util.Map;
 
 public class ParseApplication extends Application {
 
-    public static final String TAG = "ParseApplication";
+    private static final String TAG = "ParseApplication";
+    private static ParseApplication instance = null;
+
+    public static ParseApplication get() {
+        // no null handler because initialization needs context
+        // assumes it's been initialized
+        return instance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Context context = getApplicationContext();
+        instance = new ParseApplication(context);
+    }
+
+    public ParseApplication() {}
+
+    /**
+     * Private constructor to setup singleton.
+     */
+    public ParseApplication(Context context) {
+        String app_id = context.getResources().getString(R.string.back4app_app_id);
+        String server_url = context.getResources().getString(R.string.back4app_server_url);
+        String client_key = context.getResources().getString(R.string.back4app_client_key);
+
         ParseObject.registerSubclass(User.class);
         ParseObject.registerSubclass(Journal.class);
-        Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId(getString(R.string.back4app_app_id))
-                .clientKey(getString(R.string.back4app_client_key))
-                .server(getString(R.string.back4app_server_url))
+        Parse.initialize(new Parse.Configuration.Builder(context)
+                .applicationId(app_id)
+                .clientKey(client_key)
+                .server(server_url)
                 .build());
     }
 
-    public static void queryJournals(FindCallback<Journal> callback) {
+    /**
+     * Loads all journals from current user.
+     */
+    public void queryJournals(FindCallback<Journal> callback) {
         ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
         query.include(Journal.KEY_AUTHOR);
         query.whereEqualTo(Journal.KEY_AUTHOR, ParseUser.getCurrentUser());
@@ -48,13 +73,16 @@ public class ParseApplication extends Application {
         query.findInBackground(callback);
     }
 
-    public static void saveJournal(String title, String content, SaveCallback callback) {
+    /**
+     * Saves new journal to current user.
+     */
+    public void saveJournal(String title, String content, SaveCallback callback) {
         Journal journal = new Journal();
         journal.setTitle(title);
         journal.setContent(content);
         journal.setUser(ParseUser.getCurrentUser());
 
-        TRApplication.onAnalysis(content, new Callback() {
+        TRApplication.get().onAnalysis(content, new Callback() {
             @Override
             public void run() {
                 // needed to have for callback; isn't called
@@ -74,9 +102,13 @@ public class ParseApplication extends Application {
         });
     }
 
-    private static void prune(Map<String, List<Piece>> options) {
+    /**
+     * Used when saving a new journal.
+     * Does extra work to ensure any empty options aren't saved
+     * and aren't offered in the future.
+     */
+    private void prune(Map<String, List<Piece>> options) {
         List<String> toRemove = new ArrayList<>();
-        // prune empty objects in options
         for (String key : options.keySet()) {
             if (options.get(key).size() == 0) {
                 toRemove.add(key);
@@ -87,11 +119,14 @@ public class ParseApplication extends Application {
         }
     }
 
-    // update journal & regenerate cover
-    public static void updateJournal(Journal journal, String title, String content, SaveCallback callback) {
+    /**
+     * Updates an existing journal
+     * and regenerates a cover.
+     */
+    public void updateJournal(Journal journal, String title, String content, SaveCallback callback) {
         journal.setTitle(title);
         journal.setContent(content);
-        TRApplication.onAnalysis(content, new Callback() {
+        TRApplication.get().onAnalysis(content, new Callback() {
             @Override
             public void run() {
                 // Needed to have for callback; isn't called
@@ -111,24 +146,24 @@ public class ParseApplication extends Application {
         });
     }
 
-    public static void updateTitle(Journal journal, String title, SaveCallback callback) {
+    public void updateTitle(Journal journal, String title, SaveCallback callback) {
         journal.setTitle(title);
         journal.saveInBackground(callback);
     }
 
-    public static void deleteJournal(Journal journal, DeleteCallback callback) {
+    public void deleteJournal(Journal journal, DeleteCallback callback) {
         journal.deleteInBackground(callback);
     }
 
-    public static void loginUser(String username, String password, LogInCallback callback) {
+    public void loginUser(String username, String password, LogInCallback callback) {
         ParseUser.logInInBackground(username, password, callback);
     }
 
-    public static void logoutUser(LogOutCallback callback) {
+    public void logoutUser(LogOutCallback callback) {
         ParseUser.logOutInBackground(callback);
     }
 
-    public static void registerUser(String firstName, String username, String password, SignUpCallback callback) {
+    public void registerUser(String firstName, String username, String password, SignUpCallback callback) {
         User user = new User();
         user.setFirstName(firstName);
         user.setUsername(username);
@@ -136,7 +171,7 @@ public class ParseApplication extends Application {
         user.signUpInBackground(callback);
     }
 
-    public static void updateActiveCover(Journal journal, Cover cover, SaveCallback callback) {
+    public void updateActiveCover(Journal journal, Cover cover, SaveCallback callback) {
         try {
             journal.setCover(cover.getJson());
             journal.saveInBackground(callback);

@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseApplication.logoutUser(new LogOutCallback() {
+                ParseApplication.get().logoutUser(new LogOutCallback() {
                     @Override
                     public void done(ParseException e) {
                         Intent i = new Intent(ProfileActivity.this, LoginActivity.class);

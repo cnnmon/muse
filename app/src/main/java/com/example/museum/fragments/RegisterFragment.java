@@ -65,7 +65,7 @@ public class RegisterFragment extends Fragment {
                 String firstName = etName.getText().toString();
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                ParseApplication.registerUser(firstName, username, password, new SignUpCallback() {
+                ParseApplication.get().registerUser(firstName, username, password, new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {

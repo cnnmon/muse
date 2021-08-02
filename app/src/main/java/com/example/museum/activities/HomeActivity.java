@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
         allJournals.clear();
         datedJournals.clear();
         allJournals.add(new Journal()); // dummy object to fill the spot for a "new journal" button
-        ParseApplication.queryJournals(new FindCallback<Journal>() {
+        ParseApplication.get().queryJournals(new FindCallback<Journal>() {
             @Override
             public void done(List<Journal> journals, ParseException e) {
                 if (e != null) {

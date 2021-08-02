@@ -87,7 +87,7 @@ public class TabFragment extends Fragment {
                     Log.i("OptionFragment", piece.getTitle());
                     Cover cover = activity.cover;
                     cover.setActiveCover(keyword, index);
-                    ParseApplication.updateActiveCover(activity.journal, activity.cover, new SaveCallback() {
+                    ParseApplication.get().updateActiveCover(activity.journal, activity.cover, new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             activity.initActiveCover(piece);

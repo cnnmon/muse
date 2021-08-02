@@ -69,7 +69,7 @@ public class LoginFragment extends Fragment {
                 btnLogin.startAnimation();
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                ParseApplication.loginUser(username, password, new LogInCallback() {
+                ParseApplication.get().loginUser(username, password, new LogInCallback() {
                     @Override
                     public void done(ParseUser user, ParseException e) {
                         if (e != null) {

@@ -1,5 +1,6 @@
 package com.example.museum;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -17,25 +18,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TRApplication {
+public class TRApplication extends Application {
 
     private static final String TAG = "TRApplication";
+    private static TRApplication instance = null;
 
     public static final int MAX_OPTIONS = 3;
     private static final int MAX_KEYWORDS = 6;
 
-    private static TextRank tr;
-    private static MetClient met;
+    public TextRank tr;
+    public MetClient met;
 
-    public static void initialize(Context context) {
-        met = new MetClient(context);
+    public static TRApplication get() {
+        // no null handler because initialization needs context
+        // assumes it's been initialized
+        return instance;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Context context = getApplicationContext();
+        instance = new TRApplication();
+        instance.met = new MetClient(context);
         InputStream sent = context.getResources().openRawResource(R.raw.en_sent);
         InputStream token = context.getResources().openRawResource(R.raw.en_token);
         InputStream stop = context.getResources().openRawResource(R.raw.stopwords);
         InputStream exstop = context.getResources().openRawResource(R.raw.extended_stopwords);
 
         try {
-            tr = new TextRank(sent, token, stop, exstop);
+            instance.tr = new TextRank(sent, token, stop, exstop);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,10 +56,8 @@ public class TRApplication {
     /**
      * Analyzes text using TextRank and finds important keywords.
      * Sends best keyword to search for art.
-     * @param contents contents of text to analyze
-     * @param callback function that happens after analysis is finished (ex. load gallery)
      */
-    public static void onAnalysis(String contents, Callback callback) {
+    public void onAnalysis(String contents, Callback callback) {
         // doesn't parse em-dashes correctly
         contents = contents.replace('\u2014', ' ');
 
@@ -106,7 +116,7 @@ public class TRApplication {
     /**
      * Searches MET API based on a given word.
      */
-    private static void searchKeywords(String key, Map<String, List<Piece>> options, Callback callback, Callback error) {
+    private void searchKeywords(String key, Map<String, List<Piece>> options, Callback callback, Callback error) {
         List<Piece> pieces = new ArrayList<>();
         options.put(key, pieces);
 

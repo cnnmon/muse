@@ -173,7 +173,7 @@ public class ReadActivity extends AppCompatActivity {
     }
 
     private void updateTitle(String title) {
-        ParseApplication.updateTitle(journal, title, new SaveCallback() {
+        ParseApplication.get().updateTitle(journal, title, new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
@@ -188,7 +188,7 @@ public class ReadActivity extends AppCompatActivity {
     }
 
     private void updateJournal(String title, String content) {
-        ParseApplication.updateJournal(journal, title, content, new SaveCallback() {
+        ParseApplication.get().updateJournal(journal, title, content, new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null) {

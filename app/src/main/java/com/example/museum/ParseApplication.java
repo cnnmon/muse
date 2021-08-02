@@ -42,6 +42,9 @@ public class ParseApplication extends Application {
         instance = new ParseApplication(context);
     }
 
+    /**
+     * Required public; otherwise says init is not accessible
+     */
     public ParseApplication() {}
 
     /**

@@ -26,8 +26,8 @@ public class TRApplication extends Application {
     public static final int MAX_OPTIONS = 3;
     private static final int MAX_KEYWORDS = 6;
 
-    public TextRank tr;
-    public MetClient met;
+    private TextRank tr;
+    private MetClient met;
 
     public static TRApplication get() {
         // no null handler because initialization needs context

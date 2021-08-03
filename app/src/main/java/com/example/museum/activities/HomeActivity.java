@@ -111,14 +111,10 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     }
 
     @Override
-    public void showProgress() {
-        // TODO: add progress
-    }
+    public void showProgress() { }
 
     @Override
-    public void hideProgress() {
-        // TODO: add progress
-    }
+    public void hideProgress() { }
 
     @Override
     public void updateJournals() {

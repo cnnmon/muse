@@ -146,14 +146,10 @@ public class OptionsActivity extends AppCompatActivity implements OptionsContrac
     public void setPresenter(OptionsContract.Presenter presenter) { this.presenter = presenter; }
 
     @Override
-    public void showProgress() {
-        // TODO: add progress
-    }
+    public void showProgress() { }
 
     @Override
-    public void hideProgress() {
-        // TODO: add progress
-    }
+    public void hideProgress() { }
 
     @Override
     public void error() {

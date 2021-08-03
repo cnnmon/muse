@@ -76,14 +76,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     }
 
     @Override
-    public void showProgress() {
-        // TODO: add progress
-    }
+    public void showProgress() { }
 
     @Override
-    public void hideProgress() {
-        // TODO: add progress
-    }
+    public void hideProgress() { }
 
     @Override
     public void goHome() {

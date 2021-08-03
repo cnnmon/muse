@@ -154,7 +154,6 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
             } else {
                 editable = true;
             }
-            toggleMenu(true);
         }
         else {
             editable = true;
@@ -222,14 +221,10 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
     public void setPresenter(ReadContract.Presenter presenter) { this.presenter = presenter; }
 
     @Override
-    public void showProgress() {
-        // TODO: add progress
-    }
+    public void showProgress() { }
 
     @Override
-    public void hideProgress() {
-        // TODO: add progress
-    }
+    public void hideProgress() { }
 
     @Override
     public void error() {

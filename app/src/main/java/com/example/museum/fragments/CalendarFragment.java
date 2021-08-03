@@ -84,7 +84,7 @@ public class CalendarFragment extends Fragment {
 
     public class DayDecorator implements DayViewDecorator {
 
-        private Map<String, List<Journal>> journals;
+        private final Map<String, List<Journal>> journals;
 
         public DayDecorator(Map<String, List<Journal>> journals) {
             this.journals = journals;
@@ -97,7 +97,7 @@ public class CalendarFragment extends Fragment {
 
         @Override
         public void decorate(DayViewFacade view) {
-            view.setBackgroundDrawable(getResources().getDrawable(R.drawable.outlined_calendar));
+            view.setBackgroundDrawable(getResources().getDrawable(R.drawable.outlined_calendar_background));
         }
     }
 

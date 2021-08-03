@@ -12,6 +12,14 @@ import java.util.List;
 @Parcel
 public class Piece extends JSONObject {
 
+    private static final String KEY_IMAGE = "primaryImage";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_ARTIST = "artistDisplayName";
+    private static final String KEY_DEPARTMENT = "department";
+    private static final String KEY_DATE = "objectDate";
+    private static final String KEY_MEDIUM = "medium";
+    private static final String KEY_URL = "objectURL";
+
     public String imageUrl;
     public String title;
     public String artist;
@@ -25,17 +33,16 @@ public class Piece extends JSONObject {
     // Piece object from MET-given jsonObject
     public static Piece fromJson(JSONObject jsonObject) throws JSONException {
         Piece piece = new Piece();
-        piece.imageUrl = jsonObject.getString("primaryImage");
-        piece.title = jsonObject.getString("title");
-        piece.artist = jsonObject.getString("artistDisplayName");
-        piece.department = jsonObject.getString("department");
-        piece.objectDate = jsonObject.getString("objectDate");
-        piece.medium = jsonObject.getString("medium");
-        piece.metUrl = jsonObject.getString("objectURL");
+        piece.imageUrl = jsonObject.getString(KEY_IMAGE);
+        piece.title = jsonObject.getString(KEY_TITLE);
+        piece.artist = jsonObject.getString(KEY_ARTIST);
+        piece.department = jsonObject.getString(KEY_DEPARTMENT);
+        piece.objectDate = jsonObject.getString(KEY_DATE);
+        piece.medium = jsonObject.getString(KEY_MEDIUM);
+        piece.metUrl = jsonObject.getString(KEY_URL);
         return piece;
     }
 
-    // TODO: fill with default values
     public static Piece emptyPiece() {
         Piece piece = new Piece();
         return piece;
@@ -76,13 +83,13 @@ public class Piece extends JSONObject {
     // format into my jsonObject
     public JSONObject getJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("primaryImage", imageUrl);
-        jsonObject.put("title", title);
-        jsonObject.put("artistDisplayName", artist);
-        jsonObject.put("department", department);
-        jsonObject.put("objectDate", objectDate);
-        jsonObject.put("medium", medium);
-        jsonObject.put("objectURL", metUrl);
+        jsonObject.put(KEY_IMAGE, imageUrl);
+        jsonObject.put(KEY_TITLE, title);
+        jsonObject.put(KEY_ARTIST, artist);
+        jsonObject.put(KEY_DEPARTMENT, department);
+        jsonObject.put(KEY_DATE, objectDate);
+        jsonObject.put(KEY_MEDIUM, medium);
+        jsonObject.put(KEY_URL, metUrl);
         return jsonObject;
     }
 }

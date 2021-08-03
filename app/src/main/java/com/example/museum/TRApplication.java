@@ -20,7 +20,9 @@ import java.util.Map;
 
 public class TRApplication extends Application {
 
+    private static final String KEY_OBJECT_IDS = "objectIDS";
     private static final String TAG = "TRApplication";
+
     private static TRApplication instance = null;
     public static final int MAX_OPTIONS = 3;
     private static final int MAX_KEYWORDS = 6;
@@ -123,7 +125,7 @@ public class TRApplication extends Application {
             @Override
             public void onResponse(JSONObject arrayResponse) {
                 try {
-                    JSONArray array = arrayResponse.getJSONArray("objectIDs");
+                    JSONArray array = arrayResponse.getJSONArray(KEY_OBJECT_IDS);
                     int maxCount = Math.min(array.length(), MAX_OPTIONS);
                     for (int i = 0; i < maxCount; i += 1) {
                         met.getPiece(array.getInt(i), response -> {

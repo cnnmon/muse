@@ -27,6 +27,7 @@ import java.util.Date;
 public class WriteActivity extends AppCompatActivity implements WriteContract.View {
 
     private static final int MIN_CONTENT_WORDS = 6;
+
     private WriteContract.Presenter presenter;
     private EditText etTitle;
     private EditText etContent;
@@ -107,7 +108,7 @@ public class WriteActivity extends AppCompatActivity implements WriteContract.Vi
     @Override
     public void error() {
         Snackbar snackbar = Snackbar
-                .make(layout, "Error creating journal.", Snackbar.LENGTH_LONG);
+                .make(layout, getResources().getString(R.string.error_read), Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
@@ -124,12 +125,12 @@ public class WriteActivity extends AppCompatActivity implements WriteContract.Vi
         String[] words = content.split(" ");
         if (title.isEmpty()) {
             Snackbar snackbar = Snackbar
-                    .make(layout, "Title cannot be empty.", Snackbar.LENGTH_LONG);
+                    .make(layout, layout.getResources().getString(R.string.error_empty_title), Snackbar.LENGTH_LONG);
             snackbar.show();
             return false;
         } else if (words.length < MIN_CONTENT_WORDS) {
             Snackbar snackbar = Snackbar
-                    .make(layout, "Content must have at least 6 words.", Snackbar.LENGTH_LONG);
+                    .make(layout, layout.getResources().getString(R.string.error_short_content), Snackbar.LENGTH_LONG);
             snackbar.show();
             return false;
         }

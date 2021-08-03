@@ -1,7 +1,5 @@
 package com.example.museum.models;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +14,9 @@ import java.util.Map;
 @Parcel
 public class Cover extends JSONObject {
 
-    private static final String TAG = "Cover";
+    private static final String KEY_ACTIVE_KEYWORD = "activeKeyword";
+    private static final String KEY_ACTIVE_COVER = "activeCover";
+    private static final String KEY_OPTIONS = "options";
 
     String activeKeyword;
     int activeCover;
@@ -38,11 +38,11 @@ public class Cover extends JSONObject {
 
     public static Cover fromJson(JSONObject jsonObject) throws JSONException {
         Cover cover = new Cover();
-        cover.activeKeyword = jsonObject.getString("activeKeyword");
-        cover.activeCover = jsonObject.getInt("activeCover");
+        cover.activeKeyword = jsonObject.getString(KEY_ACTIVE_KEYWORD);
+        cover.activeCover = jsonObject.getInt(KEY_ACTIVE_COVER);
         cover.keywords = new ArrayList<>();
         cover.options = new HashMap<>();
-        JSONObject optionsObject = jsonObject.getJSONObject("options");
+        JSONObject optionsObject = jsonObject.getJSONObject(KEY_OPTIONS);
 
         Iterator<String> keys = optionsObject.keys();
         while(keys.hasNext()) {
@@ -51,7 +51,6 @@ public class Cover extends JSONObject {
             List<Piece> pieces = Piece.fromJsonArray(optionsObject.getJSONArray(key));
             cover.options.put(key, pieces);
         }
-        Log.i(TAG, String.join(",", cover.keywords));
         return cover;
     }
 
@@ -65,8 +64,8 @@ public class Cover extends JSONObject {
 
     public JSONObject getJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("activeKeyword", activeKeyword);
-        jsonObject.put("activeCover", activeCover);
+        jsonObject.put(KEY_ACTIVE_KEYWORD, activeKeyword);
+        jsonObject.put(KEY_ACTIVE_COVER, activeCover);
 
         JSONObject optionsObject = new JSONObject();
         for (int i = 0; i < keywords.size(); i += 1) {
@@ -79,7 +78,7 @@ public class Cover extends JSONObject {
             optionsObject.put(keywords.get(i), piecesArray);
         }
 
-        jsonObject.put("options", optionsObject);
+        jsonObject.put(KEY_OPTIONS, optionsObject);
         return jsonObject;
     }
 

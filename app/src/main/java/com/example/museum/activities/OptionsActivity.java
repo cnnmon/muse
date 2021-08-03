@@ -83,7 +83,7 @@ public class OptionsActivity extends AppCompatActivity implements OptionsContrac
     @SuppressLint("SetTextI18n")
     public void initActiveCover(Piece piece) {
         tvName.setText(piece.getTitle());
-        tvArtist.setText(piece.getArtist().isEmpty() ? "Unknown" : piece.getArtist());
+        tvArtist.setText(piece.getArtist().isEmpty() ? getResources().getText(R.string.unknown) : piece.getArtist());
         tvDetails.setText(piece.getMedium() + ", " + piece.getObjectDate());
         Glide.with(this).load(piece.getImageUrl()).into(ivCover);
     }
@@ -158,7 +158,7 @@ public class OptionsActivity extends AppCompatActivity implements OptionsContrac
     @Override
     public void error() {
         Snackbar snackbar = Snackbar
-                .make(layout, "Issue editing cover", Snackbar.LENGTH_LONG);
+                .make(layout, getResources().getText(R.string.error_options), Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 

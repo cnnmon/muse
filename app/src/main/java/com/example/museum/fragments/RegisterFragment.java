@@ -96,7 +96,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     @Override
     public void error() {
         Snackbar snackbar = Snackbar
-                .make(view, "Error signing up. Fields are not valid and/or username may be taken.", Snackbar.LENGTH_LONG);
+                .make(view, getResources().getString(R.string.register), Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 }

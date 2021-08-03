@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewA"
@@ -27,13 +28,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@tools:sample/avatars"
+                tools:ignore="ContentDescription" />
 
             <ImageView
-                android:id="@+id/border"
+                android:id="@+id/borderA"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/outlined_transparent" />
+                android:src="@drawable/outlined_transparent"
+                tools:ignore="ContentDescription" />
+
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -51,13 +55,16 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@tools:sample/avatars"
+                tools:ignore="ContentDescription" />
 
             <ImageView
-                android:id="@+id/border"
+                android:id="@+id/borderB"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/outlined_transparent" />
+                android:src="@drawable/outlined_transparent"
+                tools:ignore="ContentDescription" />
+
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -75,13 +82,16 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@tools:sample/avatars"
+                tools:ignore="ContentDescription" />
 
             <ImageView
-                android:id="@+id/border"
+                android:id="@+id/borderC"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/outlined_transparent" />
+                android:src="@drawable/outlined_transparent"
+                tools:ignore="ContentDescription" />
+
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>

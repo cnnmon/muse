@@ -6,12 +6,12 @@
         android:state_checked="true"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home"
-        android:title="home"
+        android:title="@string/home"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/miCalendar"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_calendar_today"
-        android:title="calendar"
+        android:title="@string/calendar"
         app:showAsAction="ifRoom" />
 </menu>

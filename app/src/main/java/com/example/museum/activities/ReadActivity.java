@@ -50,7 +50,6 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
     private EditText etContent;
     private Menu menu;
     private CollapsingToolbarLayout cToolbar;
-
     private boolean editable;
 
     @Override
@@ -114,7 +113,7 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_arrow_back));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        menu.findItem(R.id.icOptions).setIcon(getDrawable(R.drawable.ic_baseline_settings_24));
+        menu.findItem(R.id.icOptions).setIcon(getDrawable(R.drawable.ic_baseline_settings));
         initializeEdit(menu.findItem(R.id.icSave));
         this.menu = menu;
 
@@ -235,7 +234,7 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
     @Override
     public void error() {
         Snackbar snackbar = Snackbar
-                .make(layout, "Error updating journal.", Snackbar.LENGTH_LONG);
+                .make(layout, getResources().getText(R.string.error_read), Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 

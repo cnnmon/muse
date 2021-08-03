@@ -26,4 +26,5 @@
         android:background="@drawable/outlined_white_rounded"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_navigation" />
+
 </RelativeLayout>

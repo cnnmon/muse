@@ -15,11 +15,11 @@ import java.util.Date;
 @ParseClassName("Journal")
 public class Journal extends ParseObject {
 
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_COVER = "cover";
-    public static final String KEY_CONTENTS = "contents";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_COVER = "cover";
+    private static final String KEY_CONTENTS = "contents";
     public static final String KEY_AUTHOR = "author";
-    public static final String KEY_IMAGE = "image";
+    private static final String KEY_IMAGE = "image";
 
     public String getTitle() { return getString(KEY_TITLE); }
     public void setTitle(String title) { put(KEY_TITLE, title); }

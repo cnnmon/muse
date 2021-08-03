@@ -3,6 +3,7 @@ package com.example.museum.adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,15 +102,19 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                 @Override
                 public boolean onLongClick(View v) {
                     // build dialog to prompt user whether to confirm deletion
+                    Resources r = itemView.getResources();
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("Delete \"" + journal.getTitle() + "\" permanently?")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    String confirmation = String.format(
+                            r.getString(R.string.display_delete_confirmation),
+                            journal.getTitle());
+                    builder.setMessage(confirmation)
+                            .setPositiveButton(r.getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     HomeActivity activity = (HomeActivity) context;
                                     activity.removeJournal(journal);
                                 }
                             })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(r.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
 
                                 }
@@ -124,12 +129,12 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
 
         // uses dummy journal data to create a "new journal" button in 0 spot
         public void setButton() {
-            tvTitle.setText("Untitled");
+            tvTitle.setText(itemView.getResources().getString(R.string.untitled));
             tvTitle.setTextColor(context.getColor(R.color.gray));
             tvDate.setText(Journal.getSimpleDateCurrent());
 
             ImageView border = itemView.findViewById(R.id.border);
-            Glide.with(context).load(context.getDrawable(R.drawable.dashed_transparent)).into(border);
+            Glide.with(context).load(context.getDrawable(R.drawable.outlined_dashed_transparent)).into(border);
             Glide.with(context).load(context.getDrawable(R.drawable.new_journal)).into(ivCover);
 
             LinearLayout textLayout = itemView.findViewById(R.id.textLayout);

@@ -36,7 +36,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
         TextView tvName = findViewById(R.id.tvName);
         TextView tvUsername = findViewById(R.id.tvUsername);
         tvName.setText(user.getFirstName());
-        tvUsername.setText("@" + user.getUsername());
+        String username = String.format(getResources().getString(R.string.display_username), user.getUsername());
+        tvUsername.setText(username);
 
         Button btnLogout = findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {

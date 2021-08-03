@@ -48,7 +48,9 @@ public class HomeFragment extends Fragment {
 
         TextView tvName = view.findViewById(R.id.tvName);
         User user = (User) ParseUser.getCurrentUser();
-        tvName.setText("Hi " + user.getFirstName() + "! \uD83D\uDC4B");
+        String header = String.format(getResources().getString(R.string.display_home_header),
+                user.getFirstName());
+        tvName.setText(header);
         ImageView ivProfile = view.findViewById(R.id.ivProfile);
 
         activity = (HomeActivity) getActivity();

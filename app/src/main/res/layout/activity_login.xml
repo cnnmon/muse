@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -33,6 +32,16 @@
                 android:adjustViewBounds="true"
                 android:clickable="false"
                 app:srcCompat="@drawable/abstract_2" />
+
+            <ImageView
+                android:id="@+id/ivAbstract"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:adjustViewBounds="true"
+                android:clickable="false"
+                app:srcCompat="@drawable/abstract_1"
+                tools:ignore="ContentDescription" />
         </androidx.cardview.widget.CardView>
 
         <androidx.fragment.app.FragmentContainerView
@@ -59,6 +68,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        app:srcCompat="@drawable/outlined_transparent" />
+        app:srcCompat="@drawable/outlined_transparent"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>

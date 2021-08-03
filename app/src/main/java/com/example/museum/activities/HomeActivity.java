@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
     @Override
     public void error() {
         Snackbar snackbar = Snackbar
-                .make(layout, "Issue loading journals", Snackbar.LENGTH_LONG);
+                .make(layout, getResources().getText(R.string.error_home), Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 }

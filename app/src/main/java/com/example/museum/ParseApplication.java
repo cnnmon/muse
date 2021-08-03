@@ -11,7 +11,6 @@ import com.example.museum.models.User;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
-import com.parse.LogOutCallback;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -161,10 +160,6 @@ public class ParseApplication extends Application {
 
     public void loginUser(String username, String password, LogInCallback callback) {
         ParseUser.logInInBackground(username, password, callback);
-    }
-
-    public void logoutUser(LogOutCallback callback) {
-        ParseUser.logOutInBackground(callback);
     }
 
     public void registerUser(String firstName, String username, String password, SignUpCallback callback) {

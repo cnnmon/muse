@@ -112,7 +112,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void error() {
         Snackbar snackbar = Snackbar
-                .make(view, "Error logging in. Want to sign up?", Snackbar.LENGTH_LONG);
+                .make(view, getResources().getString(R.string.error_login), Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 

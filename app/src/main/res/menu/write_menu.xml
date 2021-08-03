@@ -6,6 +6,6 @@
         android:id="@+id/icSave"
         android:icon="@drawable/ic_baseline_check"
         android:iconTint="@color/black"
-        android:title="Edit"
+        android:title="@string/save"
         app:showAsAction="ifRoom" />
 </menu>

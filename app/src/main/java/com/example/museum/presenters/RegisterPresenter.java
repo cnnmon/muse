@@ -12,14 +12,10 @@ import com.parse.SignUpCallback;
 public class RegisterPresenter implements RegisterContract.Presenter {
 
     private final RegisterContract.View view;
-    private View layout;
-    private Context context;
 
-    public RegisterPresenter(RegisterContract.View view, View layout, Context context) {
+    public RegisterPresenter(RegisterContract.View view) {
         this.view = view;
         this.view.setPresenter(this);
-        this.layout = layout;
-        this.context = context;
     }
 
     @Override

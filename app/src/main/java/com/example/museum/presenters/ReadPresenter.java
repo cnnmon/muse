@@ -12,14 +12,10 @@ import com.parse.SaveCallback;
 public class ReadPresenter implements ReadContract.Presenter {
 
     private final ReadContract.View view;
-    private final View layout;
-    private final Activity activity;
 
-    public ReadPresenter(ReadContract.View view, View layout) {
+    public ReadPresenter(ReadContract.View view) {
         this.view = view;
         this.view.setPresenter(this);
-        this.activity = (Activity) view;
-        this.layout = layout;
     }
 
     @Override

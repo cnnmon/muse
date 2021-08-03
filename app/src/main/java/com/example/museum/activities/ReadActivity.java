@@ -72,7 +72,7 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
         cToolbar = findViewById(R.id.cToolbar);
         layout = findViewById(R.id.relativeLayout);
 
-        new ReadPresenter(this, layout);
+        new ReadPresenter(this);
 
         etTitle.setText(journal.getTitle());
         etContent.setText(journal.getContent());

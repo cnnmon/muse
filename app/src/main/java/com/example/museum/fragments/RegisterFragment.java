@@ -45,7 +45,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
 
         this.view = view;
         context = getContext();
-        new RegisterPresenter(this, view, context);
+        new RegisterPresenter(this);
 
         LoginActivity activity = (LoginActivity) getContext();
         Button btnLogin = view.findViewById(R.id.btnLogin);

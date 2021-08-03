@@ -94,7 +94,7 @@ public class OptionsActivity extends AppCompatActivity implements OptionsContrac
         }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        TabAdapter adapter = new TabAdapter(this, getSupportFragmentManager(), cover);
+        TabAdapter adapter = new TabAdapter(getSupportFragmentManager(), cover);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

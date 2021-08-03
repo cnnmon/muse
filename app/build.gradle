@@ -14,7 +14,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "GOOGLE_APPLICATION_CREDENTIALS", "\"${System.env.GOOGLE_APPLICATION_CREDENTIALS}\""
     }
 
@@ -75,4 +75,10 @@ dependencies {
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
     // Calendar
     implementation 'com.github.prolificinteractive:material-calendarview:1.4.3'
+    // Testing
+    // Required for local unit tests (JUnit 4 framework)
+    testImplementation 'junit:junit:4.12'
+    // Required for instrumented tests
+    androidTestImplementation 'com.android.support:support-annotations:24.0.0'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
 }

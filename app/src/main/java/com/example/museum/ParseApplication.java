@@ -87,11 +87,6 @@ public class ParseApplication extends Application {
 
         TRApplication.get().onAnalysis(content, new Callback() {
             @Override
-            public void run() {
-                // needed to have for callback; isn't called
-            }
-
-            @Override
             public void run(Map<String, List<Piece>> options) {
                 try {
                     prune(options);
@@ -130,11 +125,6 @@ public class ParseApplication extends Application {
         journal.setTitle(title);
         journal.setContent(content);
         TRApplication.get().onAnalysis(content, new Callback() {
-            @Override
-            public void run() {
-                // Needed to have for callback; isn't called
-            }
-
             @Override
             public void run(Map<String, List<Piece>> options) {
                 try {

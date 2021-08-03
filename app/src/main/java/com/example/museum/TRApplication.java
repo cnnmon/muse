@@ -20,12 +20,12 @@ import java.util.Map;
 
 public class TRApplication extends Application {
 
-    private static final String KEY_OBJECT_IDS = "objectIDS";
+    private static final String KEY_OBJECT_IDS = "objectIDs";
     private static final String TAG = "TRApplication";
 
     private static TRApplication instance = null;
     public static final int MAX_OPTIONS = 3;
-    private static final int MAX_KEYWORDS = 6;
+    public static final int MAX_KEYWORDS = 6;
 
     private TextRank tr;
     private MetClient met;
@@ -53,23 +53,27 @@ public class TRApplication extends Application {
         }
     }
 
-    /**
-     * Analyzes text using TextRank and finds important keywords.
-     * Sends best keyword to search for art.
-     */
-    public void onAnalysis(String contents, Callback callback) {
+    public List<String> getKeywords(String contents) {
         // doesn't parse em-dashes correctly
         contents = contents.replace('\u2014', ' ');
-
         ArrayList<TextRank.TokenVertex> rankedTokens = tr.keywordExtraction(contents);
         List<String> keywords = new ArrayList<>();
         for(int i = 0; i < rankedTokens.size() && i < MAX_KEYWORDS; i++){
             TextRank.TokenVertex tv = rankedTokens.get(i);
             keywords.add(i, tv.getToken());
         }
+        Log.i(TAG, "KEYWORDS: " + String.join(",", keywords));
+        return keywords;
+    }
+
+    /**
+     * Analyzes text using TextRank and finds important keywords.
+     * Sends best keyword to search for art.
+     */
+    public void onAnalysis(String contents, Callback callback) {
+        List<String> keywords = getKeywords(contents);
 
         // iterate through all keywords to get a list of pieces for each
-        Log.i(TAG, "KEYWORDS: " + String.join(",", keywords));
         Map<String, List<Piece>> options = new HashMap<>();
         int maxCount = Math.min(keywords.size(), MAX_KEYWORDS);
         for (int i = 0; i < maxCount; i += 1) {
@@ -94,15 +98,9 @@ public class TRApplication extends Application {
                     }
                 }
 
-                @Override
-                public void run() { }
-
             }, new Callback() { // error handling, need to skip this key
                 @Override
-                public void run(Map<String, List<Piece>> options) { }
-
-                @Override
-                public void run() {
+                public void run(Map<String, List<Piece>> options) {
                     // if doesn't find any IDs, remove from options and skip this key
                     options.remove(currentKey);
                     keywords.remove(currentKey);
@@ -142,7 +140,7 @@ public class TRApplication extends Application {
                         });
                     }
                 } catch (JSONException e) {
-                    error.run();
+                    error.run(options);
                 }
             }
         });

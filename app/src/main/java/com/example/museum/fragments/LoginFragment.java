@@ -3,31 +3,35 @@ package com.example.museum.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.activities.HomeActivity;
 import com.example.museum.activities.LoginActivity;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
+import com.example.museum.contracts.LoginContract;
+import com.example.museum.models.User;
+import com.example.museum.presenters.LoginPresenter;
+import com.google.android.material.snackbar.Snackbar;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements LoginContract.View {
 
     private static final String TAG = "LoginFragment";
+
+    private LoginContract.Presenter presenter;
     private Context context;
+    private CircularProgressButton btnLogin;
+    private View view;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -48,18 +52,28 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LoginActivity landingActivity = (LoginActivity) getContext();
+        this.view = view;
+        context = getContext();
+        new LoginPresenter(this);
+
+        LoginActivity activity = (LoginActivity) getContext();
         Button btnRegister = view.findViewById(R.id.btnRegister);
         EditText etUsername = view.findViewById(R.id.etUsername);
         EditText etPassword = view.findViewById(R.id.etPassword);
+        btnLogin = view.findViewById(R.id.btnLogin);
 
-        context = getContext();
-        CircularProgressButton btnLogin = view.findViewById(R.id.btnLogin);
+        // remembers current user
+        User currentUser = presenter.getCurrentUser();
+        if (currentUser != null) {
+            Log.i(TAG, "resuming session as " + currentUser.getUsername());
+            Intent i = new Intent(context, HomeActivity.class);
+            startActivity(i);
+        }
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                landingActivity.fragmentManager.beginTransaction().replace(R.id.flContainer, landingActivity.register).commit();
+                activity.fragmentManager.beginTransaction().replace(R.id.flContainer, activity.register).commit();
             }
         });
 
@@ -69,21 +83,37 @@ public class LoginFragment extends Fragment {
                 btnLogin.startAnimation();
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                ParseApplication.get().loginUser(username, password, new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException e) {
-                        if (e != null) {
-                            btnLogin.revertAnimation();
-                            ParseUser.logOut();
-                            Toast.makeText(context, "Wrong username or password", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Intent i = new Intent(context, HomeActivity.class);
-                        startActivity(i);
-                        btnLogin.revertAnimation();
-                    }
-                });
+                presenter.loginUser(username, password);
             }
         });
     }
+
+    @Override
+    public void setPresenter(LoginContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showProgress() {
+        btnLogin.startAnimation();
+    }
+
+    @Override
+    public void hideProgress() {
+        btnLogin.revertAnimation();
+    }
+
+    @Override
+    public void success() {
+        Intent i = new Intent(context, HomeActivity.class);
+        context.startActivity(i);
+    }
+
+    @Override
+    public void error() {
+        Snackbar snackbar = Snackbar
+                .make(view, "Error logging in. Want to sign up?", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
 }

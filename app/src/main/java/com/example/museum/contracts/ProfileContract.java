@@ -4,16 +4,15 @@ import com.example.museum.base.MvpPresenter;
 import com.example.museum.base.MvpView;
 import com.example.museum.models.User;
 
-public interface LoginContract {
+public interface ProfileContract {
 
-    interface View extends MvpView<Presenter> {
-        void success();
-        void error();
+    interface View extends MvpView<ProfileContract.Presenter> {
+        void goHome();
     }
 
     interface Presenter extends MvpPresenter {
         User getCurrentUser();
-        void loginUser(String username, String password);
+        void logoutUser();
     }
 
 }

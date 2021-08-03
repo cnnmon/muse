@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,9 +19,12 @@ import com.bumptech.glide.Glide;
 import com.example.museum.R;
 import com.example.museum.TRApplication;
 import com.example.museum.adapters.TabAdapter;
+import com.example.museum.contracts.OptionsContract;
 import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
+import com.example.museum.presenters.OptionsPresenter;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.r0adkll.slidr.Slidr;
 
@@ -28,12 +32,13 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-public class OptionsActivity extends AppCompatActivity {
+public class OptionsActivity extends AppCompatActivity implements OptionsContract.View {
 
-    public Journal journal;
     public Cover cover;
 
-    private Toolbar toolbar;
+    private Journal journal;
+    private OptionsContract.Presenter presenter;
+    private View layout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ImageView ivCover;
@@ -50,14 +55,14 @@ public class OptionsActivity extends AppCompatActivity {
 
         // slide right to return to home
         Slidr.attach(this);
-
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
         cover = journal.getCover();
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
+        layout = findViewById(R.id.relativeLayout);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         ivCover = findViewById(R.id.ivCover);
@@ -66,8 +71,13 @@ public class OptionsActivity extends AppCompatActivity {
         tvDetails = findViewById(R.id.tvDetails);
         keywords = cover.getKeywords();
 
+        new OptionsPresenter(this);
         initActiveCover(cover.getPiece());
         initTabs();
+    }
+
+    public void updateActiveCover(Cover cover) {
+        presenter.updateActiveCover(journal, cover);
     }
 
     @SuppressLint("SetTextI18n")
@@ -130,5 +140,30 @@ public class OptionsActivity extends AppCompatActivity {
             }
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void setPresenter(OptionsContract.Presenter presenter) { this.presenter = presenter; }
+
+    @Override
+    public void showProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void hideProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void error() {
+        Snackbar snackbar = Snackbar
+                .make(layout, "Issue editing cover", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
+    public void success(Cover cover) {
+        initActiveCover(cover.getPiece());
     }
 }

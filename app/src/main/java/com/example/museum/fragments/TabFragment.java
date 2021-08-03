@@ -1,7 +1,6 @@
 package com.example.museum.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +12,10 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.activities.OptionsActivity;
 import com.example.museum.models.Cover;
 import com.example.museum.models.Piece;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
@@ -84,15 +80,9 @@ public class TabFragment extends Fragment {
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("OptionFragment", piece.getTitle());
                     Cover cover = activity.cover;
                     cover.setActiveCover(keyword, index);
-                    ParseApplication.get().updateActiveCover(activity.journal, activity.cover, new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            activity.initActiveCover(piece);
-                        }
-                    });
+                    activity.updateActiveCover(cover);
                 }
             });
         }

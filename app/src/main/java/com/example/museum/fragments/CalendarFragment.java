@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,10 +28,7 @@ import java.util.Map;
 
 public class CalendarFragment extends Fragment {
 
-    private static final String TAG = "CalendarFragment";
-
     private HomeActivity activity;
-    private MaterialCalendarView calendarView;
     private RecyclerView rvJournals;
 
     public CalendarFragment() {
@@ -53,11 +49,9 @@ public class CalendarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        calendarView = view.findViewById(R.id.calendarView);
+        MaterialCalendarView calendarView = view.findViewById(R.id.calendarView);
         activity = (HomeActivity) getActivity();
         calendarView.addDecorator(new DayDecorator(activity.datedJournals));
-
-        TextView tvDate = view.findViewById(R.id.tvDate);
 
         List<Journal> dayJournals = new ArrayList<>();
         CalendarAdapter adapter = new CalendarAdapter(activity, dayJournals);

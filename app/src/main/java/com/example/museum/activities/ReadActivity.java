@@ -7,13 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,38 +22,36 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
+import com.example.museum.contracts.ReadContract;
 import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
+import com.example.museum.presenters.ReadPresenter;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
+import com.google.android.material.snackbar.Snackbar;
 import com.r0adkll.slidr.Slidr;
 
 import org.parceler.Parcels;
 
 import java.util.Objects;
 
-public class ReadActivity extends AppCompatActivity {
+public class ReadActivity extends AppCompatActivity implements ReadContract.View {
 
-    public static final String TAG = "ReadActivity";
     public static int REQUEST_CODE = 22;
 
+    private ReadContract.Presenter presenter;
+    private RelativeLayout layout;
     private Journal journal;
     private Cover cover;
     private Context context;
     private ImageView ivCover;
     private EditText etTitle;
     private EditText etContent;
-    private TextView tvDate;
-    private Toolbar toolbar;
     private Menu menu;
     private CollapsingToolbarLayout cToolbar;
 
     private boolean editable;
-    private boolean edited; // prevents needless home updates
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,31 +61,33 @@ public class ReadActivity extends AppCompatActivity {
         // slide right to return to home
         Slidr.attach(this);
 
-        context = this;
-
         // unwrap journal
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
         cover = journal.getCover();
+        context = this;
 
         etTitle = findViewById(R.id.etTitle);
         etContent = findViewById(R.id.etContent);
-        tvDate = findViewById(R.id.tvDate);
+        TextView tvDate = findViewById(R.id.tvDate);
         ivCover = findViewById(R.id.ivCover);
         cToolbar = findViewById(R.id.cToolbar);
+        layout = findViewById(R.id.relativeLayout);
+
+        new ReadPresenter(this, layout);
 
         etTitle.setText(journal.getTitle());
         etContent.setText(journal.getContent());
         tvDate.setText(journal.getSimpleDate());
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         updateImage(cover.getPiece());
     }
 
-    // returns to home screen & updates journal (if needed)
-    public void goHome(boolean edited) {
+    // returns to home screen & updates journal
+    public void goHome() {
         Intent i = new Intent();
         setResult(RESULT_OK, i);
         finish();
@@ -98,7 +97,7 @@ public class ReadActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            goHome(edited);
+            goHome();
         } else if (id == R.id.icSave) {
             toggleEdit(item);
         } else if (id == R.id.icOptions) {
@@ -144,62 +143,25 @@ public class ReadActivity extends AppCompatActivity {
             // hides home icon so activity doesn't get destroyed before update; prevents crash
             toggleMenu(false);
             editable = false;
-            edited = true;
             String title = String.valueOf(etTitle.getText());
             String content = String.valueOf(etContent.getText());
-            String[] words = content.split(" ");
 
-            // error handling
-            if (title.length() == 0) {
-                Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
-                toggleMenu(true);
-                return;
-            } else if (words.length < 6) {
-                Toast.makeText(this, "Content must have at least 6 words", Toast.LENGTH_SHORT).show();
-                toggleMenu(true);
-                return;
+            if (WriteActivity.errorCheck(layout, title, content)) {
+                if (titleChanged(title)) {
+                    presenter.updateTitle(title, journal);
+                } else if (contentChanged(content)) {
+                    presenter.updateJournal(title, content, journal);
+                }
+            } else {
+                editable = true;
             }
-
-            // if only title was changed
-            if (titleChanged(title) && !contentChanged(content)) updateTitle(title);
-            else if (contentChanged(content)) updateJournal(title, content);
-            else toggleMenu(true);
+            toggleMenu(true);
         }
         else {
             editable = true;
             Glide.with(this).load(0).into(ivCover);
         }
         initializeEdit(icEdit);
-    }
-
-    private void updateTitle(String title) {
-        ParseApplication.get().updateTitle(journal, title, new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error while updating journal" + e);
-                    Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
-                }
-                Log.i(TAG, "journal title updated successfully");
-                Glide.with(context).load(cover.getPiece().getImageUrl()).into(ivCover);
-                toggleMenu(true);
-            }
-        });
-    }
-
-    private void updateJournal(String title, String content) {
-        ParseApplication.get().updateJournal(journal, title, content, new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error while updating journal" + e);
-                    Toast.makeText(context, "Error while updating", Toast.LENGTH_SHORT).show();
-                }
-                Log.i(TAG, "journal saved successfully");
-                cover = journal.getCover();
-                updateImage(cover.getPiece());
-            }
-        });
     }
 
     public void updateImage(Piece piece) {
@@ -255,5 +217,39 @@ public class ReadActivity extends AppCompatActivity {
             Piece piece = cover.getPiece();
             updateImage(piece);
         }
+    }
+
+    @Override
+    public void setPresenter(ReadContract.Presenter presenter) { this.presenter = presenter; }
+
+    @Override
+    public void showProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void hideProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void error() {
+        Snackbar snackbar = Snackbar
+                .make(layout, "Error updating journal.", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
+    public void successUpdateTitle() {
+        // returns same image to header
+        Glide.with(context).load(cover.getPiece().getImageUrl()).into(ivCover);
+        toggleMenu(true);
+    }
+
+    @Override
+    public void successUpdateJournal() {
+        // updates image in header
+        cover = journal.getCover();
+        updateImage(cover.getPiece());
     }
 }

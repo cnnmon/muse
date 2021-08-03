@@ -74,16 +74,6 @@
         app:spinning_bar_padding="0dp"
         app:spinning_bar_width="3dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:fontFamily="@font/skmodernist"
-        android:gravity="center"
-        android:text="Already have an account?"
-        android:textColor="@color/black" />
-
     <Button
         android:id="@+id/btnLogin"
         style="@style/Widget.MaterialComponents.Button.TextButton"

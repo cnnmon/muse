@@ -2,6 +2,7 @@ package com.example.museum;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 public class ParseApplication extends Application {
 
-    private static final String TAG = "ParseApplication";
     private static ParseApplication instance = null;
 
     public static ParseApplication get() {
@@ -35,11 +35,10 @@ public class ParseApplication extends Application {
         return instance;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Context context = getApplicationContext();
-        instance = new ParseApplication(context);
+    public static void initialize(Context context) {
+        if (instance == null) {
+            instance = new ParseApplication(context);
+        }
     }
 
     /**
@@ -84,6 +83,8 @@ public class ParseApplication extends Application {
         journal.setTitle(title);
         journal.setContent(content);
         journal.setUser(ParseUser.getCurrentUser());
+
+        Log.i("ParseApplication", String.valueOf(TRApplication.get() == null));
 
         TRApplication.get().onAnalysis(content, new Callback() {
             @Override

@@ -23,8 +23,6 @@ import com.parse.ParseUser;
 
 public class HomeFragment extends Fragment {
 
-    private static final String TAG = "HomeFragment";
-
     private HomeActivity activity;
     private Context context;
 

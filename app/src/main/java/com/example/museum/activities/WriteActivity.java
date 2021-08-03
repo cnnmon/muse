@@ -1,54 +1,54 @@
 package com.example.museum.activities;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
+import com.example.museum.contracts.WriteContract;
+import com.example.museum.presenters.WritePresenter;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class WriteActivity extends AppCompatActivity {
+public class WriteActivity extends AppCompatActivity implements WriteContract.View {
 
-    public static final String TAG = "CreateJournalActivity";
-
-    private Context context;
+    private static final int MIN_CONTENT_WORDS = 6;
+    private WriteContract.Presenter presenter;
     private EditText etTitle;
     private EditText etContent;
-    private Toolbar toolbar;
+    private View layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
 
-        context = this;
         etTitle = findViewById(R.id.tvTitle);
         etContent = findViewById(R.id.tvContent);
+        layout = findViewById(R.id.linearLayout);
+
+        new WritePresenter(this);
 
         TextView tvDate = findViewById(R.id.tvDate);
         Format f = new SimpleDateFormat("MM/dd/yy");
         String date = f.format(new Date());
         tvDate.setText(date);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
     }
@@ -83,28 +83,56 @@ public class WriteActivity extends AppCompatActivity {
     private void createJournal() {
         String title = String.valueOf(etTitle.getText());
         String content = String.valueOf(etContent.getText());
-        String[] words = content.split(" ");
 
-        if (title.isEmpty()) {
-            Toast.makeText(context, "Title cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
-        } else if (words.length < 6) {
-            Toast.makeText(context, "Content must have at least 6 words", Toast.LENGTH_SHORT).show();
-            return;
+        if (errorCheck(layout, title, content)) {
+            presenter.saveJournal(title, content);
         }
+    }
 
-        ParseApplication.get().saveJournal(title, content, new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error while creating journal" + e);
-                    Toast.makeText(context, "Error while creating", Toast.LENGTH_SHORT).show();
-                }
-                Log.i(TAG, "journal created successfully");
-                Intent i = new Intent();
-                setResult(RESULT_OK, i);
-                finish();
-            }
-        });
+    @Override
+    public void setPresenter(WriteContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void hideProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void error() {
+        Snackbar snackbar = Snackbar
+                .make(layout, "Error creating journal.", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    @Override
+    public void success() {
+        Intent i = new Intent();
+        setResult(Activity.RESULT_OK, i);
+        finish();
+    }
+
+    // error handling
+    // returns true if it can proceed creating
+    public static boolean errorCheck(View layout, String title, String content) {
+        String[] words = content.split(" ");
+        if (title.isEmpty()) {
+            Snackbar snackbar = Snackbar
+                    .make(layout, "Title cannot be empty.", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            return false;
+        } else if (words.length < MIN_CONTENT_WORDS) {
+            Snackbar snackbar = Snackbar
+                    .make(layout, "Content must have at least 6 words.", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            return false;
+        }
+        return true;
     }
 }

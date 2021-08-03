@@ -2,9 +2,8 @@ package com.example.museum.contracts;
 
 import com.example.museum.base.MvpPresenter;
 import com.example.museum.base.MvpView;
-import com.example.museum.models.User;
 
-public interface LoginContract {
+public interface RegisterContract {
 
     interface View extends MvpView<Presenter> {
         void success();
@@ -12,8 +11,7 @@ public interface LoginContract {
     }
 
     interface Presenter extends MvpPresenter {
-        User getCurrentUser();
-        void loginUser(String username, String password);
+        void registerUser(String firstName, String username, String password);
     }
 
 }

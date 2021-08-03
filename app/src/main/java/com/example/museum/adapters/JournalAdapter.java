@@ -15,14 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.activities.HomeActivity;
 import com.example.museum.models.Cover;
 import com.example.museum.models.Journal;
 import com.example.museum.models.Piece;
-import com.parse.DeleteCallback;
-import com.parse.ParseException;
 
 import java.util.List;
 
@@ -103,18 +100,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    // build dialog to prompt user whether to confirm deletion
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage("Delete \"" + journal.getTitle() + "\" permanently?")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    ParseApplication.get().deleteJournal(journal, new DeleteCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            HomeActivity activity = (HomeActivity) context;
-                                            activity.finish();
-                                            context.startActivity(activity.getIntent());
-                                        }
-                                    });
+                                    HomeActivity activity = (HomeActivity) context;
+                                    activity.removeJournal(journal);
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

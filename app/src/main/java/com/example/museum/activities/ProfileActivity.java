@@ -13,14 +13,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
+import com.example.museum.contracts.ProfileContract;
 import com.example.museum.models.User;
-import com.parse.LogOutCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
+import com.example.museum.presenters.ProfilePresenter;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ProfileContract.View {
+
+    private ProfileContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,8 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        User user = (User) ParseUser.getCurrentUser();
+        new ProfilePresenter(this);
+        User user = presenter.getCurrentUser();
 
         TextView tvName = findViewById(R.id.tvName);
         TextView tvUsername = findViewById(R.id.tvUsername);
@@ -41,13 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseApplication.get().logoutUser(new LogOutCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
-                        startActivity(i);
-                    }
-                });
+                presenter.logoutUser();
             }
         });
     }
@@ -72,5 +67,26 @@ public class ProfileActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) finish();
         return true;
+    }
+
+    @Override
+    public void setPresenter(ProfileContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void hideProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void goHome() {
+        Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+        startActivity(i);
     }
 }

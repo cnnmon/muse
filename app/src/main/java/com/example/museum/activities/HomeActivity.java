@@ -3,8 +3,8 @@ package com.example.museum.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +12,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.museum.ParseApplication;
 import com.example.museum.R;
 import com.example.museum.adapters.JournalAdapter;
+import com.example.museum.contracts.HomeContract;
 import com.example.museum.fragments.CalendarFragment;
 import com.example.museum.fragments.HomeFragment;
 import com.example.museum.models.Journal;
+import com.example.museum.presenters.HomePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.FindCallback;
-import com.parse.ParseException;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
@@ -29,15 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements HomeContract.View {
 
-    public static final String TAG = "HomeActivity";
     public static int REQUEST_CODE = 42;
 
     public JournalAdapter adapter;
-    public List<Journal> allJournals;
     public Map<String, List<Journal>> datedJournals;
 
+    private HomeContract.Presenter presenter;
+    private List<Journal> allJournals;
+    private View layout;
     private FragmentManager fragmentManager;
     private HomeFragment home;
     private CalendarFragment calendar;
@@ -51,8 +52,10 @@ public class HomeActivity extends AppCompatActivity {
         datedJournals = new ArrayMap<>();
         adapter = new JournalAdapter(this, allJournals);
 
+        new HomePresenter(this);
         queryJournals();
 
+        layout = findViewById(R.id.relativeLayout);
         fragmentManager = getSupportFragmentManager();
         home = new HomeFragment();
         calendar = new CalendarFragment();
@@ -88,31 +91,11 @@ public class HomeActivity extends AppCompatActivity {
         allJournals.clear();
         datedJournals.clear();
         allJournals.add(new Journal()); // dummy object to fill the spot for a "new journal" button
-        ParseApplication.get().queryJournals(new FindCallback<Journal>() {
-            @Override
-            public void done(List<Journal> journals, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "issue fetching journals");
-                    return;
-                }
-                allJournals.addAll(journals);
-                adapter.notifyDataSetChanged();
+        presenter.queryJournals(allJournals, datedJournals);
+    }
 
-                // generate hashmap so decorator has easier time processing data
-                for (int i = 0; i < journals.size(); i += 1) {
-                    Journal j = journals.get(i);
-                    String date = j.getSimpleDate();
-
-                    if (datedJournals.containsKey(date)) {
-                        datedJournals.get(date).add(j);
-                    } else {
-                        List<Journal> journalsAtDate = new ArrayList<>();
-                        journalsAtDate.add(j);
-                        datedJournals.put(date, journalsAtDate);
-                    }
-                }
-            }
-        });
+    public void removeJournal(Journal journal) {
+        presenter.removeJournal(journal);
     }
 
     @Override
@@ -120,5 +103,38 @@ public class HomeActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.flContainer);
         fragment.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void setPresenter(HomeContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void hideProgress() {
+        // TODO: add progress
+    }
+
+    @Override
+    public void updateJournals() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refresh() {
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    public void error() {
+        Snackbar snackbar = Snackbar
+                .make(layout, "Issue loading journals", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

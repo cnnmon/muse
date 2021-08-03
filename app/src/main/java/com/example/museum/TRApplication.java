@@ -22,7 +22,6 @@ public class TRApplication extends Application {
 
     private static final String TAG = "TRApplication";
     private static TRApplication instance = null;
-
     public static final int MAX_OPTIONS = 3;
     private static final int MAX_KEYWORDS = 6;
 
@@ -35,21 +34,20 @@ public class TRApplication extends Application {
         return instance;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Context context = getApplicationContext();
-        instance = new TRApplication();
-        instance.met = new MetClient(context);
-        InputStream sent = context.getResources().openRawResource(R.raw.en_sent);
-        InputStream token = context.getResources().openRawResource(R.raw.en_token);
-        InputStream stop = context.getResources().openRawResource(R.raw.stopwords);
-        InputStream exstop = context.getResources().openRawResource(R.raw.extended_stopwords);
+    public static void initialize(Context context) {
+        if (instance == null) {
+            instance = new TRApplication();
+            instance.met = new MetClient(context);
+            InputStream sent = context.getResources().openRawResource(R.raw.en_sent);
+            InputStream token = context.getResources().openRawResource(R.raw.en_token);
+            InputStream stop = context.getResources().openRawResource(R.raw.stopwords);
+            InputStream exstop = context.getResources().openRawResource(R.raw.extended_stopwords);
 
-        try {
-            instance.tr = new TextRank(sent, token, stop, exstop);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                instance.tr = new TextRank(sent, token, stop, exstop);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

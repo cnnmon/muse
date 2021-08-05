@@ -53,8 +53,6 @@ public class OptionsActivity extends AppCompatActivity implements OptionsContrac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        // slide right to return to home
-        Slidr.attach(this);
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
         cover = journal.getCover();
 

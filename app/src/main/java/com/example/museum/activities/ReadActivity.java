@@ -30,7 +30,6 @@ import com.example.museum.models.Piece;
 import com.example.museum.presenters.ReadPresenter;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
-import com.r0adkll.slidr.Slidr;
 
 import org.parceler.Parcels;
 
@@ -56,9 +55,6 @@ public class ReadActivity extends AppCompatActivity implements ReadContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
-
-        // slide right to return to home
-        Slidr.attach(this);
 
         // unwrap journal
         journal = Parcels.unwrap(getIntent().getParcelableExtra(Journal.class.getSimpleName()));
